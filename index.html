@@ -514,15 +514,40 @@
   });
 
   /* ---------- Generative ceremony music (Web Audio, self-contained) ----------
-     A warm sustained pad with a delicate music-box melody over a gentle
-     I–V–vi–IV progression in D major. No external files; starts on the
-     user's tap-to-open gesture so it satisfies browser autoplay rules. */
+     An original, lyrical piece in D major: a lush filtered string pad and a
+     warm descending bass under a singing melody (with gentle vibrato) that
+     arcs to an emotional peak, plus a soft harp arpeggio for movement and a
+     slow dynamic swell so the phrase breathes. No external files; starts on
+     the user's tap-to-open gesture so it satisfies browser autoplay rules. */
   var Music = (function(){
-    var ctx, master, comp, wet, started=false, muted=false, timer;
-    var bpm=64, beat=60/bpm, bar=beat*4;
-    // triads (MIDI): D  ·  A  ·  Bm ·  G
-    var prog=[ [62,66,69], [57,61,64], [59,62,66], [55,59,62] ];
-    var barIndex=0, nextTime=0;
+    var ctx, master, bus, comp, wet, started=false, muted=false, timer;
+    var bpm=58, beat=60/bpm, bar=beat*4;
+
+    /* 8-bar romantic loop. Each bar: chord voicing (MIDI) + a descending
+       bass note.  D · A/C# · Bm · F#m/A · G · D/F# · Em · A  */
+    var prog=[
+      {c:[62,66,69], b:50},   // D
+      {c:[61,64,69], b:49},   // A/C#
+      {c:[59,62,66], b:47},   // Bm
+      {c:[57,61,66], b:45},   // F#m/A
+      {c:[55,59,62], b:43},   // G
+      {c:[54,57,62], b:42},   // D/F#
+      {c:[55,59,64], b:40},   // Em
+      {c:[57,61,64], b:45}    // A
+    ];
+    /* Original singing melody, per bar: [midi, beats] (null = rest). */
+    var R=null;
+    var melody=[
+      [[78,2],[76,1],[74,1]],       // F#5 E5 D5
+      [[76,2],[73,2]],              // E5  C#5
+      [[74,1.5],[71,1.5],[74,1]],   // D5  B4  D5
+      [[73,2],[69,2]],              // C#5 A4
+      [[71,1],[74,1],[79,2]],       // B4  D5  G5   (rising)
+      [[78,2],[81,1],[78,1]],       // F#5 A5  F#5  (peak)
+      [[76,2],[79,1],[76,1]],       // E5  G5  E5
+      [[73,2],[69,1],[R,1]]         // C#5 A4  (breath)
+    ];
+    var barIndex=0, nextTime=0, lastLvl=0.6;
 
     function mtof(m){ return 440*Math.pow(2,(m-69)/12); }
 
@@ -534,43 +559,89 @@
       return buf;
     }
 
+    /* lush string pad — three detuned oscillators through a breathing lowpass */
     function pad(freq, t, dur, peak){
       var g=ctx.createGain();
-      var o1=ctx.createOscillator(); o1.type='sine';     o1.frequency.value=freq;
-      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq; o2.detune.value=6;
-      o1.connect(g); o2.connect(g); g.connect(master);
-      var a=0.7, r=1.4;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(peak, t+a);
+      var lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.Q.value=0.4;
+      lp.frequency.setValueAtTime(680, t);
+      lp.frequency.linearRampToValueAtTime(1650, t+dur*0.5);
+      lp.frequency.linearRampToValueAtTime(880, t+dur+1.2);
+      var types=['sine','triangle','sine'], det=[-7,0,8];
+      for(var i=0;i<3;i++){ var o=ctx.createOscillator(); o.type=types[i];
+        o.frequency.value=freq; o.detune.value=det[i]; o.connect(lp); o.start(t); o.stop(t+dur+1.8); }
+      lp.connect(g); g.connect(bus);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(peak, t+0.9);
       g.gain.setValueAtTime(peak, t+dur);
-      g.gain.linearRampToValueAtTime(0.0001, t+dur+r);
-      o1.start(t); o2.start(t); o1.stop(t+dur+r+0.1); o2.stop(t+dur+r+0.1);
+      g.gain.linearRampToValueAtTime(0.0001, t+dur+1.6);
     }
 
-    function bell(freq, t, vel){
+    /* warm sub bass */
+    function bass(freq, t, dur, peak){
+      var g=ctx.createGain();
+      var o=ctx.createOscillator();  o.type='sine';     o.frequency.value=freq;
+      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq; o2.detune.value=-4;
+      var g2=ctx.createGain(); g2.gain.value=0.28; o2.connect(g2); g2.connect(g);
+      o.connect(g); g.connect(bus);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(peak, t+0.4);
+      g.gain.setValueAtTime(peak, t+dur);
+      g.gain.linearRampToValueAtTime(0.0001, t+dur+0.8);
+      o.start(t); o2.start(t); o.stop(t+dur+1); o2.stop(t+dur+1);
+    }
+
+    /* singing melody — soft flute/celesta blend with a gentle vibrato */
+    function mel(freq, t, dur, vel){
+      var g=ctx.createGain();
+      var o1=ctx.createOscillator(); o1.type='sine';     o1.frequency.value=freq;
+      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq;
+      var g2=ctx.createGain(); g2.gain.value=0.34; o2.connect(g2); g2.connect(g);
+      var o3=ctx.createOscillator(); o3.type='sine'; o3.frequency.value=freq*2;
+      var g3=ctx.createGain(); g3.gain.value=0.07; o3.connect(g3); g3.connect(g);
+      var lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=5.2;
+      var lg=ctx.createGain(); lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(freq*0.006, t+0.35);
+      lfo.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
+      o1.connect(g); g.connect(bus);
+      var peak=0.13*vel, sus=peak*0.78;
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(peak, t+0.06);
+      g.gain.linearRampToValueAtTime(sus, t+0.28);
+      g.gain.setValueAtTime(sus, t+dur);
+      g.gain.linearRampToValueAtTime(0.0001, t+dur+0.34);
+      o1.start(t); o2.start(t); o3.start(t); lfo.start(t);
+      var e=t+dur+0.4; o1.stop(e); o2.stop(e); o3.stop(e); lfo.stop(e);
+    }
+
+    /* soft harp pluck for the inner arpeggio */
+    function pluck(freq, t, vel){
       var g=ctx.createGain();
       var o=ctx.createOscillator(); o.type='triangle'; o.frequency.value=freq;
-      var oh=ctx.createOscillator(); oh.type='sine'; oh.frequency.value=freq*2;
-      var hg=ctx.createGain(); hg.gain.value=0.22; oh.connect(hg);
-      o.connect(g); hg.connect(g); g.connect(master);
-      var peak=0.14*vel;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(peak, t+0.012);
-      g.gain.exponentialRampToValueAtTime(0.0006, t+1.9);
-      o.start(t); oh.start(t); o.stop(t+2.0); oh.stop(t+2.0);
+      o.connect(g); g.connect(bus);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.045*vel, t+0.008);
+      g.gain.exponentialRampToValueAtTime(0.0004, t+1.0);
+      o.start(t); o.stop(t+1.1);
     }
 
     function scheduleBar(){
-      var chord=prog[barIndex%4], t=nextTime;
-      chord.forEach(function(m){ pad(mtof(m), t, bar*0.98, 0.075); });
-      pad(mtof(chord[0]-12), t, bar*0.98, 0.11);           // soft bass
-      var tones=[chord[0],chord[1],chord[2],chord[0]+12,chord[2],chord[1],chord[0]+12,chord[2]];
-      var pat=[1,0,1,1,0,1,1,0];                            // rests for air
-      for(var i=0;i<8;i++){
-        if(!pat[i]) continue;
-        var vel=0.62 + (i%3)*0.12;
-        bell(mtof(tones[i]+12), t + i*(beat/2), vel);
+      var p=prog[barIndex%8], t=nextTime;
+      p.c.forEach(function(m){ pad(mtof(m), t, bar*0.96, 0.055); });
+      bass(mtof(p.b), t, bar*0.96, 0.16);
+      // gentle broken-chord arpeggio, one note per beat, sits below the melody
+      var arp=[p.c[0], p.c[1], p.c[2], p.c[1]];
+      for(var i=0;i<4;i++){ pluck(mtof(arp[i]), t + i*beat, 0.75 - (i%2)*0.2); }
+      // melody phrase
+      var mb=melody[barIndex%8], mt=t;
+      for(var j=0;j<mb.length;j++){
+        var dur=mb[j][1]*beat;
+        if(mb[j][0]!==R){ mel(mtof(mb[j][0]), mt+0.02, dur*0.96, (barIndex%8>=4?1.05:0.92)); }
+        mt+=dur;
       }
+      // slow phrase swell: rises toward the peak (bars 5-6), ebbs at the cadence
+      var lvl=0.6 + 0.4*Math.sin(Math.PI*((barIndex%8)/7));
+      bus.gain.setValueAtTime(lastLvl, t);
+      bus.gain.linearRampToValueAtTime(lvl, t+bar);
+      lastLvl=lvl;
       barIndex++; nextTime+=bar;
     }
 
@@ -584,13 +655,14 @@
       if(!AC) return false;
       ctx=new AC();
       master=ctx.createGain(); master.gain.value=0.0001;
+      bus=ctx.createGain(); bus.gain.value=0.6;
       comp=ctx.createDynamicsCompressor();
-      comp.threshold.value=-16; comp.knee.value=24; comp.ratio.value=3;
-      comp.attack.value=0.01; comp.release.value=0.25;
-      var conv=ctx.createConvolver(); conv.buffer=impulse(2.8,2.4);
-      wet=ctx.createGain(); wet.gain.value=0.34;
-      var dry=ctx.createGain(); dry.gain.value=0.9;
-      master.connect(comp);
+      comp.threshold.value=-15; comp.knee.value=26; comp.ratio.value=3;
+      comp.attack.value=0.012; comp.release.value=0.28;
+      var conv=ctx.createConvolver(); conv.buffer=impulse(3.4,2.2);
+      wet=ctx.createGain(); wet.gain.value=0.42;
+      var dry=ctx.createGain(); dry.gain.value=0.86;
+      bus.connect(master); master.connect(comp);
       comp.connect(dry).connect(ctx.destination);
       comp.connect(conv).connect(wet).connect(ctx.destination);
       return true;
