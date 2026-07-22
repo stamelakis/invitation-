@@ -131,17 +131,12 @@
   .orn-div.tight{ width:min(58%,190px); height:18px; margin:8px 0 16px; }
   .orn-sprig{ width:74px; height:26px; margin:0 0 14px; color:var(--gold-deep); animation-delay:.2s; }
 
-  .mono-small{
-    /* Reproduce the ORIGINAL monogram exactly: it used the device's default
-       serif italic (Didot/GFS-Didot/Bodoni weren't installed then). Exclude
-       the now-loaded web fonts so it falls back to that same serif italic. */
-    font-family:Georgia,"Palatino Linotype",Palatino,"Times New Roman",serif;
-    font-style:italic;
-    font-size:52px;
-    line-height:1;
-    color:var(--gold);
-    letter-spacing:.02em;
-    margin-bottom:16px;
+  /* hand-drawn calligraphic monogram (the couple's mark) */
+  .mono-mark{
+    display:block;
+    width:min(70%,246px);
+    height:auto;
+    margin:2px auto 14px;
     animation-delay:.15s;
   }
   .eyebrow{
@@ -375,7 +370,8 @@
       <span class="frame-corner bl" aria-hidden="true"></span>
       <span class="frame-corner br" aria-hidden="true"></span>
       <div class="content">
-        <div class="mono-small">ΑΛ</div>
+        <img class="mono-mark" src="monogram.png" alt="Ανδρέας &amp; Λίνα" width="700" height="505">
+
         <svg class="ornament orn-sprig" viewBox="0 0 120 40" aria-hidden="true">
           <path class="fill" d="M60 6 L64 12 L60 18 L56 12 Z"/>
           <path d="M60 18 V33"/>
