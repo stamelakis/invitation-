@@ -140,17 +140,17 @@
     animation-delay:.15s;
   }
   .eyebrow{
-    font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+    font-size:clamp(8.5px,2.7vw,11px); letter-spacing:.16em; text-transform:uppercase;
     color:var(--ink-soft); margin-bottom:18px; animation-delay:.24s;
-    max-width:24ch; padding-left:.2em;
+    white-space:nowrap;
   }
   .names{
     font-family:var(--didone);
-    font-size:clamp(30px,9vw,40px);
-    letter-spacing:.14em;
+    font-size:clamp(24px,7.2vw,33px);
+    letter-spacing:.06em;
     font-weight:500;
     color:var(--ink);
-    margin:0 0 10px; text-wrap:balance;
+    margin:0 0 10px; white-space:nowrap;
     animation-delay:.32s;
   }
   .date{
@@ -521,33 +521,32 @@
      the user's tap-to-open gesture so it satisfies browser autoplay rules. */
   var Music = (function(){
     var ctx, master, bus, comp, wet, started=false, muted=false, timer;
-    var bpm=58, beat=60/bpm, bar=beat*4;
+    var bpm=150, beat=60/bpm, bar=beat*3;   // lilting 3/4 waltz
 
-    /* 8-bar romantic loop. Each bar: chord voicing (MIDI) + a descending
-       bass note.  D · A/C# · Bm · F#m/A · G · D/F# · Em · A  */
+    /* 8-bar joyful waltz in D major (I–vi–IV–V). Each bar: chord + bass. */
     var prog=[
       {c:[62,66,69], b:50},   // D
-      {c:[61,64,69], b:49},   // A/C#
       {c:[59,62,66], b:47},   // Bm
-      {c:[57,61,66], b:45},   // F#m/A
       {c:[55,59,62], b:43},   // G
-      {c:[54,57,62], b:42},   // D/F#
-      {c:[55,59,64], b:40},   // Em
+      {c:[57,61,64], b:45},   // A
+      {c:[62,66,69], b:50},   // D
+      {c:[59,62,66], b:47},   // Bm
+      {c:[55,59,62], b:43},   // G
       {c:[57,61,64], b:45}    // A
     ];
-    /* Original singing melody, per bar: [midi, beats] (null = rest). */
+    /* Bright music-box melody, per bar: [midi, beats] (3 beats/bar). */
     var R=null;
     var melody=[
-      [[78,2],[76,1],[74,1]],       // F#5 E5 D5
-      [[76,2],[73,2]],              // E5  C#5
-      [[74,1.5],[71,1.5],[74,1]],   // D5  B4  D5
-      [[73,2],[69,2]],              // C#5 A4
-      [[71,1],[74,1],[79,2]],       // B4  D5  G5   (rising)
-      [[78,2],[81,1],[78,1]],       // F#5 A5  F#5  (peak)
-      [[76,2],[79,1],[76,1]],       // E5  G5  E5
-      [[73,2],[69,1],[R,1]]         // C#5 A4  (breath)
+      [[78,1],[81,1],[78,1]],   // F#5 A5 F#5
+      [[74,1],[78,1],[74,1]],   // D5  F#5 D5
+      [[74,1],[79,1],[74,1]],   // D5  G5  D5
+      [[73,1],[76,1],[81,1]],   // C#5 E5  A5   (rise to peak)
+      [[81,1],[78,1],[74,1]],   // A5  F#5 D5
+      [[71,1],[74,1],[78,1]],   // B4  D5  F#5
+      [[79,1],[74,1],[71,1]],   // G5  D5  B4
+      [[73,1],[76,1],[69,1]]    // C#5 E5  A4   (cadence)
     ];
-    var barIndex=0, nextTime=0, lastLvl=0.6;
+    var barIndex=0, nextTime=0, lastLvl=0.75;
 
     function mtof(m){ return 440*Math.pow(2,(m-69)/12); }
 
@@ -559,86 +558,76 @@
       return buf;
     }
 
-    /* lush string pad — three detuned oscillators through a breathing lowpass */
+    /* soft sustained pad — light glue under the waltz */
     function pad(freq, t, dur, peak){
       var g=ctx.createGain();
-      var lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.Q.value=0.4;
-      lp.frequency.setValueAtTime(680, t);
-      lp.frequency.linearRampToValueAtTime(1650, t+dur*0.5);
-      lp.frequency.linearRampToValueAtTime(880, t+dur+1.2);
-      var types=['sine','triangle','sine'], det=[-7,0,8];
-      for(var i=0;i<3;i++){ var o=ctx.createOscillator(); o.type=types[i];
-        o.frequency.value=freq; o.detune.value=det[i]; o.connect(lp); o.start(t); o.stop(t+dur+1.8); }
-      lp.connect(g); g.connect(bus);
+      var o1=ctx.createOscillator(); o1.type='sine';     o1.frequency.value=freq;
+      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq; o2.detune.value=6;
+      o1.connect(g); o2.connect(g); g.connect(bus);
       g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(peak, t+0.9);
+      g.gain.linearRampToValueAtTime(peak, t+0.25);
       g.gain.setValueAtTime(peak, t+dur);
-      g.gain.linearRampToValueAtTime(0.0001, t+dur+1.6);
+      g.gain.linearRampToValueAtTime(0.0001, t+dur+0.5);
+      o1.start(t); o2.start(t); o1.stop(t+dur+0.6); o2.stop(t+dur+0.6);
     }
 
-    /* warm sub bass */
-    function bass(freq, t, dur, peak){
+    /* bouncy staccato bass — the "oom" of the waltz */
+    function bass(freq, t, peak){
       var g=ctx.createGain();
       var o=ctx.createOscillator();  o.type='sine';     o.frequency.value=freq;
-      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq; o2.detune.value=-4;
-      var g2=ctx.createGain(); g2.gain.value=0.28; o2.connect(g2); g2.connect(g);
+      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq;
+      var g2=ctx.createGain(); g2.gain.value=0.3; o2.connect(g2); g2.connect(g);
       o.connect(g); g.connect(bus);
       g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(peak, t+0.4);
-      g.gain.setValueAtTime(peak, t+dur);
-      g.gain.linearRampToValueAtTime(0.0001, t+dur+0.8);
-      o.start(t); o2.start(t); o.stop(t+dur+1); o2.stop(t+dur+1);
+      g.gain.linearRampToValueAtTime(peak, t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0004, t+0.5);
+      o.start(t); o2.start(t); o.stop(t+0.55); o2.stop(t+0.55);
     }
 
-    /* singing melody — soft flute/celesta blend with a gentle vibrato */
-    function mel(freq, t, dur, vel){
-      var g=ctx.createGain();
-      var o1=ctx.createOscillator(); o1.type='sine';     o1.frequency.value=freq;
-      var o2=ctx.createOscillator(); o2.type='triangle'; o2.frequency.value=freq;
-      var g2=ctx.createGain(); g2.gain.value=0.34; o2.connect(g2); g2.connect(g);
-      var o3=ctx.createOscillator(); o3.type='sine'; o3.frequency.value=freq*2;
-      var g3=ctx.createGain(); g3.gain.value=0.07; o3.connect(g3); g3.connect(g);
-      var lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=5.2;
-      var lg=ctx.createGain(); lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(freq*0.006, t+0.35);
-      lfo.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
-      o1.connect(g); g.connect(bus);
-      var peak=0.13*vel, sus=peak*0.78;
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(peak, t+0.06);
-      g.gain.linearRampToValueAtTime(sus, t+0.28);
-      g.gain.setValueAtTime(sus, t+dur);
-      g.gain.linearRampToValueAtTime(0.0001, t+dur+0.34);
-      o1.start(t); o2.start(t); o3.start(t); lfo.start(t);
-      var e=t+dur+0.4; o1.stop(e); o2.stop(e); o3.stop(e); lfo.stop(e);
-    }
-
-    /* soft harp pluck for the inner arpeggio */
+    /* short chord pluck — the "pah pah" of the waltz */
     function pluck(freq, t, vel){
       var g=ctx.createGain();
       var o=ctx.createOscillator(); o.type='triangle'; o.frequency.value=freq;
       o.connect(g); g.connect(bus);
       g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(0.045*vel, t+0.008);
-      g.gain.exponentialRampToValueAtTime(0.0004, t+1.0);
-      o.start(t); o.stop(t+1.1);
+      g.gain.linearRampToValueAtTime(0.05*vel, t+0.006);
+      g.gain.exponentialRampToValueAtTime(0.0004, t+0.34);
+      o.start(t); o.stop(t+0.4);
+    }
+
+    /* bright music-box melody — sparkling and cheerful */
+    function box(freq, t, vel){
+      var g=ctx.createGain();
+      var o=ctx.createOscillator();  o.type='triangle'; o.frequency.value=freq;
+      var oh=ctx.createOscillator(); oh.type='sine'; oh.frequency.value=freq*2.01;
+      var hg=ctx.createGain(); hg.gain.value=0.3; oh.connect(hg); hg.connect(g);
+      var o3=ctx.createOscillator(); o3.type='sine'; o3.frequency.value=freq*3.0;
+      var h3=ctx.createGain(); h3.gain.value=0.08; o3.connect(h3); h3.connect(g);
+      o.connect(g); g.connect(bus);
+      var peak=0.15*vel;
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(peak, t+0.008);
+      g.gain.exponentialRampToValueAtTime(0.0005, t+1.4);
+      o.start(t); oh.start(t); o3.start(t);
+      var e=t+1.5; o.stop(e); oh.stop(e); o3.stop(e);
     }
 
     function scheduleBar(){
       var p=prog[barIndex%8], t=nextTime;
-      p.c.forEach(function(m){ pad(mtof(m), t, bar*0.96, 0.055); });
-      bass(mtof(p.b), t, bar*0.96, 0.16);
-      // gentle broken-chord arpeggio, one note per beat, sits below the melody
-      var arp=[p.c[0], p.c[1], p.c[2], p.c[1]];
-      for(var i=0;i<4;i++){ pluck(mtof(arp[i]), t + i*beat, 0.75 - (i%2)*0.2); }
-      // melody phrase
+      // soft pad glue for the whole bar
+      p.c.forEach(function(m){ pad(mtof(m), t, bar*0.9, 0.026); });
+      // oom (beat 1) — pah — pah (beats 2 & 3)
+      bass(mtof(p.b), t, 0.17);
+      p.c.forEach(function(m){ pluck(mtof(m), t+beat,   0.55); });
+      p.c.forEach(function(m){ pluck(mtof(m), t+2*beat, 0.48); });
+      // music-box melody
       var mb=melody[barIndex%8], mt=t;
       for(var j=0;j<mb.length;j++){
-        var dur=mb[j][1]*beat;
-        if(mb[j][0]!==R){ mel(mtof(mb[j][0]), mt+0.02, dur*0.96, (barIndex%8>=4?1.05:0.92)); }
-        mt+=dur;
+        if(mb[j][0]!==R){ box(mtof(mb[j][0]), mt+0.01, (j===0?1.0:0.84)); }
+        mt+=mb[j][1]*beat;
       }
-      // slow phrase swell: rises toward the peak (bars 5-6), ebbs at the cadence
-      var lvl=0.6 + 0.4*Math.sin(Math.PI*((barIndex%8)/7));
+      // gentle lift toward the melodic peak (bar 4)
+      var lvl=0.74 + 0.26*Math.sin(Math.PI*((barIndex%8)/7));
       bus.gain.setValueAtTime(lastLvl, t);
       bus.gain.linearRampToValueAtTime(lvl, t+bar);
       lastLvl=lvl;
@@ -659,9 +648,9 @@
       comp=ctx.createDynamicsCompressor();
       comp.threshold.value=-15; comp.knee.value=26; comp.ratio.value=3;
       comp.attack.value=0.012; comp.release.value=0.28;
-      var conv=ctx.createConvolver(); conv.buffer=impulse(3.4,2.2);
-      wet=ctx.createGain(); wet.gain.value=0.42;
-      var dry=ctx.createGain(); dry.gain.value=0.86;
+      var conv=ctx.createConvolver(); conv.buffer=impulse(2.4,2.3);
+      wet=ctx.createGain(); wet.gain.value=0.30;
+      var dry=ctx.createGain(); dry.gain.value=0.9;
       bus.connect(master); master.connect(comp);
       comp.connect(dry).connect(ctx.destination);
       comp.connect(conv).connect(wet).connect(ctx.destination);
