@@ -132,13 +132,16 @@
   .orn-sprig{ width:74px; height:26px; margin:0 0 14px; color:var(--gold-deep); animation-delay:.2s; }
 
   .mono-small{
-    font-family:var(--didone);
-    font-style:italic;              /* matches the original image's italic ΑΛ monogram */
-    font-size:58px;
+    /* Reproduce the ORIGINAL monogram exactly: it used the device's default
+       serif italic (Didot/GFS-Didot/Bodoni weren't installed then). Exclude
+       the now-loaded web fonts so it falls back to that same serif italic. */
+    font-family:Georgia,"Palatino Linotype",Palatino,"Times New Roman",serif;
+    font-style:italic;
+    font-size:52px;
     line-height:1;
     color:var(--gold);
-    letter-spacing:.05em;
-    margin-bottom:12px;
+    letter-spacing:.02em;
+    margin-bottom:16px;
     animation-delay:.15s;
   }
   .eyebrow{
