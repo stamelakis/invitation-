@@ -1,0 +1,396 @@
+<!-- Interactive wedding invitation — Andreas & Lina, 26.09.2026 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#efe9e0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ανδρέας & Λίνα — Πρόσκληση Γάμου</title>
+<style>
+  :root{
+    --paper:#f5f1ea;        /* warm off-white ground */
+    --paper-2:#efe8dd;      /* slightly deeper paper for doors */
+    --ink:#4a463f;          /* soft warm charcoal for text */
+    --ink-soft:#6f695f;     /* secondary ink */
+    --line:#cdc4b4;         /* hairline */
+    --gold:#a8895f;         /* taupe-gold accent (from the monogram) */
+    --gold-deep:#8a6f49;
+    --glow: #fbf8f2;
+    --shadow: rgba(58,48,33,.18);
+    --ease: cubic-bezier(.22,.61,.30,1);
+    --serif: "Palatino Linotype","Book Antiqua",Palatino,Georgia,"Times New Roman",serif;
+    --didone: "Didot","GFS Didot","Bodoni MT",Georgia,var(--serif);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100svh;
+    background:
+      radial-gradient(120% 90% at 50% 8%, var(--glow), transparent 60%),
+      linear-gradient(180deg,#eee7db 0%, #e6ddcf 100%);
+    color:var(--ink);
+    font-family:var(--serif);
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding:max(18px,4vw) 14px 40px;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Stage / 3D framing ---------- */
+  .stage{
+    position:relative;
+    width:min(94vw,430px);
+    perspective:2200px;
+    perspective-origin:50% 42%;
+    margin-top:min(6vh,60px);
+  }
+
+  /* The revealed invitation, sitting "inside" the arch */
+  .interior{
+    position:relative;
+    width:100%;
+    aspect-ratio:1 / 1.42;                 /* arch card proportion when closed */
+    background:
+      radial-gradient(130% 80% at 50% 0%, #fbf7f0, var(--paper) 70%);
+    border-radius:80% 80% 8px 8px / 96% 96% 6px 6px;   /* pointed chapel arch */
+    box-shadow:0 30px 60px -30px var(--shadow), inset 0 0 0 1px rgba(168,137,95,.16);
+    overflow:hidden;
+    transition:aspect-ratio .1s;
+  }
+  .stage.open .interior{
+    aspect-ratio:auto;                     /* grow to fit content once opened */
+  }
+
+  /* faint hairline arch echo inside */
+  .interior::before{
+    content:"";
+    position:absolute; inset:12px 12px auto 12px; height:0; padding:0;
+  }
+  .arch-line{
+    position:absolute; inset:14px 14px 14px 14px;
+    border:1px solid rgba(168,137,95,.28);
+    border-radius:78% 78% 6px 6px / 95% 95% 5px 5px;
+    pointer-events:none;
+  }
+
+  /* ---------- Content ---------- */
+  .content{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center;
+    text-align:center;
+    padding:44px 26px 34px;
+    opacity:0; visibility:hidden;
+  }
+  .stage.open .content{
+    position:relative; inset:auto;
+    opacity:1; visibility:visible;
+  }
+  .content > *{ opacity:0; transform:translateY(10px); }
+  .stage.open .content > *{
+    animation:rise .8s var(--ease) forwards;
+  }
+  @keyframes rise{ to{ opacity:1; transform:none } }
+
+  .mono-small{
+    font-family:var(--didone);
+    font-style:italic;
+    font-size:52px;
+    line-height:1;
+    color:var(--gold);
+    letter-spacing:.02em;
+    margin-bottom:16px;
+    animation-delay:.15s;
+  }
+  .eyebrow{
+    font-size:12px; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:18px; animation-delay:.24s;
+  }
+  .names{
+    font-family:var(--didone);
+    font-size:clamp(30px,9vw,40px);
+    letter-spacing:.14em;
+    font-weight:500;
+    color:var(--ink);
+    margin:0 0 10px; text-wrap:balance;
+    animation-delay:.32s;
+  }
+  .date{
+    font-size:clamp(18px,5.4vw,22px); letter-spacing:.3em;
+    color:var(--gold-deep); margin-bottom:22px; animation-delay:.4s;
+    font-variant-numeric:tabular-nums;
+  }
+  .rule{
+    width:54px; height:1px; background:var(--line);
+    margin:4px 0 22px; animation-delay:.46s;
+  }
+  .when{ font-size:14px; letter-spacing:.16em; margin-bottom:6px; animation-delay:.5s;}
+
+  /* interactive place link */
+  a.place{
+    display:inline-block;
+    font-size:13.5px; line-height:1.7; letter-spacing:.1em;
+    color:var(--ink); text-decoration:none;
+    border-bottom:1px dashed rgba(168,137,95,.6);
+    padding-bottom:1px; margin-bottom:18px; animation-delay:.56s;
+    transition:color .2s;
+  }
+  a.place:hover, a.place:focus-visible{ color:var(--gold-deep) }
+  a.place small{ display:block; font-size:11px; letter-spacing:.16em; color:var(--ink-soft); border:0;
+    margin-top:3px; text-transform:uppercase;}
+
+  .note{ font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft);
+    margin-bottom:22px; line-height:1.9; animation-delay:.6s;}
+
+  .party{ display:flex; flex-direction:column; gap:16px; margin-bottom:22px; animation-delay:.64s;}
+  .party .label{ font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  .party p{ margin:2px 0; font-size:12.5px; letter-spacing:.06em; color:var(--ink-soft); line-height:1.5;}
+
+  .quote{ font-style:italic; font-family:var(--didone); font-size:15px; color:var(--ink-soft);
+    line-height:1.6; max-width:26ch; margin:6px auto 26px; animation-delay:.7s;}
+  .quote span{ display:block; font-size:12px; font-style:normal; letter-spacing:.14em; margin-top:8px; color:var(--gold-deep);}
+
+  /* action chips */
+  .actions{ display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px; animation-delay:.76s;}
+  .chip{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    width:100%; padding:12px 14px;
+    font-family:var(--serif); font-size:13px; letter-spacing:.12em;
+    color:var(--ink); text-decoration:none; text-align:center;
+    background:rgba(255,255,255,.5);
+    border:1px solid var(--line); border-radius:2px;
+    cursor:pointer; transition:transform .15s var(--ease), border-color .2s, background .2s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .chip:hover, .chip:focus-visible{ border-color:var(--gold); background:#fff; transform:translateY(-1px); outline:none;}
+  .chip .ic{ width:16px; height:16px; stroke:var(--gold-deep); fill:none; stroke-width:1.5; flex:none;}
+  .chip small{ display:block; font-size:10px; letter-spacing:.14em; color:var(--ink-soft); margin-top:2px;}
+  .chip.iban{ font-variant-numeric:tabular-nums; }
+  .chip.copied{ border-color:var(--gold); background:#fbf6ee; }
+
+  .credit{ margin-top:26px; font-size:10px; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--line); animation-delay:.86s;}
+
+  /* ---------- Doors ---------- */
+  .doors{
+    position:absolute; top:0; left:0; width:100%;
+    aspect-ratio:1 / 1.42;
+    transform-style:preserve-3d;
+    z-index:3;
+  }
+  .door{
+    position:absolute; top:0; height:100%; width:50.4%;
+    transform-style:preserve-3d;
+    transition:transform 1.9s var(--ease);
+    cursor:pointer;
+  }
+  .door-l{ left:0;  transform-origin:left center; }
+  .door-r{ right:0; transform-origin:right center; }
+
+  .face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      linear-gradient(180deg,#f3ecdf, #e9e0d0);
+    box-shadow:inset 0 0 40px rgba(120,96,58,.08);
+  }
+  .door-l .face{ border-radius:80% 0 0 4px / 96% 0 0 4px; box-shadow:inset -1px 0 0 rgba(168,137,95,.25), inset 0 0 40px rgba(120,96,58,.08);}
+  .door-r .face{ border-radius:0 80% 4px 0 / 0 96% 4px 0; box-shadow:inset 1px 0 0 rgba(168,137,95,.15), inset 0 0 40px rgba(120,96,58,.08);}
+  .door .face.back{
+    transform:rotateY(180deg);
+    background:linear-gradient(180deg,#efe7d9,#e4d9c6);
+    box-shadow:inset 0 0 60px rgba(120,96,58,.12);
+  }
+
+  /* hairline arch on the closed doors */
+  .door .face::after{
+    content:""; position:absolute; inset:16px; border:1px solid rgba(168,137,95,.32);
+  }
+  .door-l .face:not(.back)::after{ border-right:0; border-radius:78% 0 0 4px / 94% 0 0 3px;}
+  .door-r .face:not(.back)::after{ border-left:0;  border-radius:0 78% 4px 0 / 0 94% 3px 0;}
+
+  /* split monogram: Α on left door, Λ on right door */
+  .glyph{
+    font-family:var(--didone); font-style:italic;
+    font-size:64px; color:var(--gold);
+    position:absolute; top:34%;
+  }
+  .door-l .glyph{ right:6px; }
+  .door-r .glyph{ left:6px; }
+
+  /* opening prompt — does NOT split (fades on open) */
+  .prompt{
+    position:absolute; left:0; right:0; bottom:12%;
+    text-align:center; z-index:4;
+    pointer-events:none;
+    transition:opacity .5s ease;
+  }
+  .prompt .p-names{ font-family:var(--didone); font-size:15px; letter-spacing:.24em; color:var(--ink); }
+  .prompt .p-date{ font-size:11px; letter-spacing:.28em; color:var(--ink-soft); margin:6px 0 16px; font-variant-numeric:tabular-nums;}
+  .prompt .p-tap{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-deep);
+    animation:breathe 2.6s ease-in-out infinite;
+  }
+  .prompt .p-tap svg{ width:14px; height:14px; stroke:var(--gold-deep); fill:none; stroke-width:1.4;}
+  @keyframes breathe{ 0%,100%{opacity:.55; transform:translateY(0)} 50%{opacity:1; transform:translateY(-3px)} }
+
+  /* ---------- Open state ---------- */
+  .stage.open .door-l{ transform:rotateY(-108deg); }
+  .stage.open .door-r{ transform:rotateY(108deg); }
+  .stage.open .doors{ pointer-events:none; }
+  .stage.open .prompt{ opacity:0; }
+
+  /* subtle floor shadow under the card */
+  .stage::after{
+    content:""; position:absolute; left:8%; right:8%; bottom:-26px; height:34px;
+    background:radial-gradient(60% 100% at 50% 0, rgba(74,60,33,.22), transparent 70%);
+    filter:blur(3px); z-index:-1; opacity:.7;
+  }
+
+  .hint-below{
+    margin-top:34px; font-size:11px; letter-spacing:.24em; text-transform:uppercase;
+    color:#9c927f; text-align:center; opacity:0; transition:opacity .6s ease;
+  }
+  .stage:not(.open) ~ .hint-below{ opacity:.9; }
+
+  @media (prefers-reduced-motion: reduce){
+    .door{ transition:opacity .5s ease; }
+    .stage.open .door-l, .stage.open .door-r{ transform:none; opacity:0; }
+    .content > *{ animation:none !important; opacity:1; transform:none; }
+    .prompt .p-tap{ animation:none; }
+  }
+</style>
+
+<main>
+  <div class="stage" id="stage">
+    <div class="interior">
+      <div class="arch-line" aria-hidden="true"></div>
+      <div class="content">
+        <div class="mono-small">ΑΛ</div>
+        <div class="eyebrow">Σας προσκαλούμε στον γάμο μας</div>
+        <h1 class="names">ΑΝΔΡΕΑΣ &amp; ΛΙΝΑ</h1>
+        <div class="date">26 · 09 · 2026</div>
+        <div class="rule"></div>
+
+        <div class="when">ΣΑΒΒΑΤΟ &nbsp;·&nbsp; ΩΡΑ 18:30</div>
+        <a class="place" id="mapLink" href="#" target="_blank" rel="noopener">
+          Παρεκκλήσι Αγίου Γεωργίου
+          <small>Κτήμα Jockey · Αχαρνές — δείτε στον χάρτη</small>
+        </a>
+
+        <div class="note">Θα ακολουθήσει δεξίωση<br>εντός του κτήματος</div>
+
+        <div class="party">
+          <div>
+            <div class="label">Οικογένειες</div>
+            <p>Παύλου Σταμελάκη &amp; Ευαγγελίας Μαμαλή</p>
+            <p>Γεωργίου Ασμενούδη &amp; Καλλιόπης Τριανταφύλλου</p>
+          </div>
+          <div>
+            <div class="label">Κουμπάροι</div>
+            <p>Διονύσιος Αρβανίτης</p>
+            <p>Ευαγγελία Παπαγιαννοπούλου</p>
+          </div>
+        </div>
+
+        <p class="quote">«Άξιζε να υπάρξουμε για να συναντηθούμε…»
+          <span>Γ. Ρίτσος</span></p>
+
+        <div class="actions">
+          <a class="chip" href="tel:+306985569739">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l0-4-4-1-2 2c-3-1.5-6.5-5-8-8l2-2-1-4z"/></svg>
+            <span>Κάλεσε τη Λίνα<small>RSVP έως 31/08 · 6985 569 739</small></span>
+          </a>
+          <a class="chip" href="tel:+306977355378">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l0-4-4-1-2 2c-3-1.5-6.5-5-8-8l2-2-1-4z"/></svg>
+            <span>Κάλεσε τον Ανδρέα<small>RSVP έως 31/08 · 6977 355 378</small></span>
+          </a>
+          <button class="chip iban" id="ibanBtn" type="button">
+            <svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg>
+            <span id="ibanText">Αντιγραφή IBAN<small>Προαιρετική λίστα γάμου · Τράπεζα Πειραιώς</small></span>
+          </button>
+          <a class="chip" id="calLink" href="#" target="_blank" rel="noopener">
+            <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1.5"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>
+            <span>Προσθήκη στο ημερολόγιο</span>
+          </a>
+        </div>
+
+        <div class="credit">Le Monogramma</div>
+      </div>
+    </div>
+
+    <!-- Doors -->
+    <div class="doors" id="doors" role="button" tabindex="0" aria-label="Αγγίξτε για να ανοίξετε την πρόσκληση">
+      <div class="door door-l">
+        <div class="face"><span class="glyph">Α</span></div>
+        <div class="face back"></div>
+      </div>
+      <div class="door door-r">
+        <div class="face"><span class="glyph">Λ</span></div>
+        <div class="face back"></div>
+      </div>
+      <div class="prompt">
+        <div class="p-names">Ανδρέας &amp; Λίνα</div>
+        <div class="p-date">26 · 09 · 2026</div>
+        <div class="p-tap">
+          <svg viewBox="0 0 24 24"><path d="M9 11V6a2 2 0 0 1 4 0v5m0-2a2 2 0 0 1 4 0v3m0-1a2 2 0 0 1 4 0v4a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.5L6 16"/></svg>
+          Αγγίξτε για να ανοίξετε
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint-below">Ανοίξτε τις πόρτες</div>
+</main>
+
+<script>
+(function(){
+  var stage  = document.getElementById('stage');
+  var doors  = document.getElementById('doors');
+
+  function open(){ stage.classList.add('open'); }
+  doors.addEventListener('click', open);
+  doors.addEventListener('keydown', function(e){
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }
+  });
+
+  /* Address → Google Maps */
+  var venue = 'Κτήμα Jockey, Αχαρνές, Αττική';
+  document.getElementById('mapLink').href =
+    'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(venue);
+
+  /* Add to calendar (Google) — 26/09/2026 18:30 EEST = 15:30 UTC */
+  var cal = new URLSearchParams({
+    action:'TEMPLATE',
+    text:'Γάμος — Ανδρέας & Λίνα',
+    dates:'20260926T153000Z/20260926T200000Z',
+    location: venue,
+    details:'Σας προσκαλούμε στον γάμο μας. Παρεκκλήσι Αγίου Γεωργίου, Κτήμα Jockey, Αχαρνές. Θα ακολουθήσει δεξίωση εντός του κτήματος.'
+  });
+  document.getElementById('calLink').href =
+    'https://calendar.google.com/calendar/render?' + cal.toString();
+
+  /* IBAN copy */
+  var IBAN = 'GR8701713190006319171595281';
+  var btn = document.getElementById('ibanBtn');
+  var txt = document.getElementById('ibanText');
+  btn.addEventListener('click', function(){
+    var done = function(){
+      btn.classList.add('copied');
+      txt.innerHTML = 'Αντιγράφηκε ✓<small>GR87 0171 3190 0063 1917 1595 281</small>';
+      setTimeout(function(){
+        btn.classList.remove('copied');
+        txt.innerHTML = 'Αντιγραφή IBAN<small>Προαιρετική λίστα γάμου · Τράπεζα Πειραιώς</small>';
+      }, 2600);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(IBAN).then(done, done);
+    } else {
+      var t=document.createElement('textarea'); t.value=IBAN; document.body.appendChild(t);
+      t.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(t); done();
+    }
+  });
+})();
+</script>
