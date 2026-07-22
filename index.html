@@ -63,6 +63,16 @@
   }
   .stage.open .interior{
     aspect-ratio:auto;                     /* grow to fit content once opened */
+    /* Cap the top curve to a fixed size so the arch stays the SAME rounded
+       Roman shape as the landing, instead of stretching into a point as the
+       tall content grows (percentage radii scale with height). */
+    border-radius:50% 50% 7px 7px / min(50vw,232px) min(50vw,232px) 6px 6px;
+  }
+  .stage.open .arch-line{
+    border-radius:50% 50% 6px 6px / min(48vw,216px) min(48vw,216px) 5px 5px;
+  }
+  .stage.open .arch-line::after{
+    border-radius:50% 50% 4px 4px / min(46vw,202px) min(46vw,202px) 4px 4px;
   }
 
   /* faint hairline arch echo inside */
