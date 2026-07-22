@@ -133,15 +133,14 @@
 
   .mono-small{
     font-family:var(--didone);
-    font-size:54px;
+    font-style:italic;              /* matches the original image's italic ΑΛ monogram */
+    font-size:58px;
     line-height:1;
     color:var(--gold);
-    letter-spacing:.03em;
+    letter-spacing:.05em;
     margin-bottom:12px;
     animation-delay:.15s;
   }
-  .mono-small .amp{ font-family:var(--serif); font-style:italic; font-weight:500;
-    font-size:.62em; color:var(--gold-deep); margin:0 .12em; }
   .eyebrow{
     font-size:11px; letter-spacing:.2em; text-transform:uppercase;
     color:var(--ink-soft); margin-bottom:18px; animation-delay:.24s;
@@ -373,7 +372,7 @@
       <span class="frame-corner bl" aria-hidden="true"></span>
       <span class="frame-corner br" aria-hidden="true"></span>
       <div class="content">
-        <div class="mono-small">Α<span class="amp">&amp;</span>Λ</div>
+        <div class="mono-small">ΑΛ</div>
         <svg class="ornament orn-sprig" viewBox="0 0 120 40" aria-hidden="true">
           <path class="fill" d="M60 6 L64 12 L60 18 L56 12 Z"/>
           <path d="M60 18 V33"/>
@@ -449,7 +448,7 @@
           </a>
           <button class="chip iban" id="ibanBtn" type="button">
             <svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg>
-            <span id="ibanText">ΑΝΤΙΓΡΑΦΗ IBAN<small>ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ &nbsp; ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small></span>
+            <span id="ibanText">ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ</span>
           </button>
           <a class="chip" id="calLink" href="#" target="_blank" rel="noopener">
             <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1.5"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>
@@ -457,7 +456,6 @@
           </a>
         </div>
 
-        <div class="credit">Le Monogramma</div>
       </div>
     </div>
 
@@ -650,10 +648,10 @@
   btn.addEventListener('click', function(){
     var done = function(){
       btn.classList.add('copied');
-      txt.innerHTML = 'ΑΝΤΙΓΡΑΦΗΚΕ ✓<small>GR87 0171 3190 0063 1917 1595 281</small>';
+      txt.innerHTML = 'ΑΝΤΙΓΡΑΦΗΚΕ ✓';
       setTimeout(function(){
         btn.classList.remove('copied');
-        txt.innerHTML = 'ΑΝΤΙΓΡΑΦΗ IBAN<small>ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ &nbsp; ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small>';
+        txt.innerHTML = 'ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ';
       }, 2600);
     };
     if(navigator.clipboard && navigator.clipboard.writeText){
