@@ -219,6 +219,8 @@
   .chip .ic{ width:16px; height:16px; stroke:var(--gold-deep); fill:none; stroke-width:1.5; flex:none;}
   .chip small{ display:block; font-size:10px; letter-spacing:.14em; color:var(--ink-soft); margin-top:2px;}
   .chip .iban-no{ font-size:10px; letter-spacing:.06em; color:var(--ink); margin-top:5px; white-space:nowrap; }
+  .chip .benef-label{ font-size:9px; letter-spacing:.16em; color:var(--gold); margin-top:6px; }
+  .chip .benef{ font-size:10px; letter-spacing:.05em; color:var(--ink); margin-top:1px; }
   .chip.iban{ font-variant-numeric:tabular-nums; }
   .chip.copied{ border-color:var(--gold); background:#fbf6ee; }
 
@@ -448,7 +450,7 @@
           </a>
           <button class="chip iban" id="ibanBtn" type="button">
             <svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg>
-            <span id="ibanText">ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ<small class="iban-no">GR87 0171 3190 0063 1917 1595 281</small><small>ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small></span>
+            <span id="ibanText">ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ<small class="iban-no">GR87 0171 3190 0063 1917 1595 281</small><small>ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small><small class="benef-label">ΔΙΚΑΙΟΥΧΟΙ</small><small class="benef">ΣΤΑΜΕΛΑΚΗΣ ΑΝΔΡΕΑΣ</small><small class="benef">ΑΣΜΕΝΟΥΔΗ ΠΑΣΧΑΛΙΑ</small></span>
           </button>
           <a class="chip" id="calLink" href="#" target="_blank" rel="noopener">
             <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1.5"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>
@@ -709,10 +711,10 @@
   btn.addEventListener('click', function(){
     var done = function(){
       btn.classList.add('copied');
-      txt.innerHTML = 'ΑΝΤΙΓΡΑΦΗΚΕ ✓<small class="iban-no">GR87 0171 3190 0063 1917 1595 281</small><small>ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small>';
+      txt.innerHTML = 'ΑΝΤΙΓΡΑΦΗΚΕ ✓<small class="iban-no">GR87 0171 3190 0063 1917 1595 281</small><small>ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small><small class="benef-label">ΔΙΚΑΙΟΥΧΟΙ</small><small class="benef">ΣΤΑΜΕΛΑΚΗΣ ΑΝΔΡΕΑΣ</small><small class="benef">ΑΣΜΕΝΟΥΔΗ ΠΑΣΧΑΛΙΑ</small>';
       setTimeout(function(){
         btn.classList.remove('copied');
-        txt.innerHTML = 'ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ<small class="iban-no">GR87 0171 3190 0063 1917 1595 281</small><small>ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small>';
+        txt.innerHTML = 'ΠΡΟΑΙΡΕΤΙΚΗ ΛΙΣΤΑ ΓΑΜΟΥ<small class="iban-no">GR87 0171 3190 0063 1917 1595 281</small><small>ΤΡΑΠΕΖΑ ΠΕΙΡΑΙΩΣ</small><small class="benef-label">ΔΙΚΑΙΟΥΧΟΙ</small><small class="benef">ΣΤΑΜΕΛΑΚΗΣ ΑΝΔΡΕΑΣ</small><small class="benef">ΑΣΜΕΝΟΥΔΗ ΠΑΣΧΑΛΙΑ</small>';
       }, 2600);
     };
     if(navigator.clipboard && navigator.clipboard.writeText){
