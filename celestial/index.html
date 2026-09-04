@@ -927,20 +927,26 @@ $("#calBtn").addEventListener("click", function(){
   openSheet("Στο ημερολόγιό σας", function(){
     sheetEmpty.hidden = false;
     sheetEmpty.textContent = "Σάββατο 26 Σεπτεμβρίου 2026, 18:30 — με υπενθύμιση την προηγούμενη μέρα.";
-    var ics = document.createElement("a");
-    ics.className = "opt"; ics.setAttribute("role","button");
-    ics.href = URL.createObjectURL(new Blob([icsText()], {type:"text/calendar;charset=utf-8"}));
-    ics.download = "Gamos-Andreas-Lina.ics";
-    ics.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/>' +
-                    '<path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Apple · Outlook · άλλο</span>';
-    ics.style.textDecoration = "none";
+    /* Το preview του artifact δεν επιτρέπει λήψη αρχείων· εκεί δείχνουμε
+       μόνο τον σύνδεσμο Google. Στη ζωντανή σελίδα φαίνονται και τα δύο. */
+    var canDownload = !(window.claude && typeof window.claude.use === "function");
+    if(canDownload){
+      var ics = document.createElement("a");
+      ics.className = "opt"; ics.setAttribute("role","button");
+      ics.href = URL.createObjectURL(new Blob([icsText()], {type:"text/calendar;charset=utf-8"}));
+      ics.download = "Gamos-Andreas-Lina.ics";
+      ics.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/>' +
+                      '<path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Apple · Outlook · άλλο</span>';
+      ics.style.textDecoration = "none";
+      sheetActs.appendChild(ics);
+    }
     var g = document.createElement("a");
     g.className = "opt"; g.setAttribute("role","button");
     g.href = googleCalUrl(); g.target = "_blank"; g.rel = "noopener";
     g.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/>' +
                   '<path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Google Ημερολόγιο</span>';
     g.style.textDecoration = "none";
-    sheetActs.appendChild(ics); sheetActs.appendChild(g);
+    sheetActs.appendChild(g);
   });
 });
 
