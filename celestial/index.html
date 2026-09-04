@@ -38,6 +38,15 @@
   --ink-soft:  #8b7857;
   --line:      rgba(150,120,70,.30);
 
+  /* Χάραξη στο χαρτί: σκιά στο πάνω τοίχωμα του αποτυπώματος (ο ήλιος
+     έρχεται από πάνω-αριστερά), φωτεινό χείλος στο κάτω, και λίγο βάθος. */
+  --deboss:
+     0 1px 0 rgba(255,254,250,1),
+     .6px 1.2px .9px rgba(255,254,250,.75),
+     0 -.8px .7px rgba(104,80,44,.58),
+     -.6px -.6px .5px rgba(104,80,44,.34),
+     0 1.8px 2.4px rgba(104,80,44,.16);
+
   --serif: "Cormorant Garamond","EB Garamond",Palatino,Georgia,serif;
   --body:  "EB Garamond","Cormorant Garamond",Palatino,Georgia,serif;
   --ease:  cubic-bezier(.22,.68,.24,1);
@@ -205,24 +214,25 @@ body.sending .scroll{overflow:hidden}
 .lbl{
   font-family:var(--serif); font-weight:500;
   font-size:clamp(8px,1.55svh,10.5px); letter-spacing:.34em; text-transform:uppercase;
-  color:var(--foil-pale); margin-bottom:.75em;
-  text-shadow:0 1px 0 rgba(255,254,249,.9), 0 -.5px .5px rgba(120,96,58,.22);
+  color:#a98a4e; margin-bottom:.75em;
+  text-shadow:var(--deboss);
 }
 .val{
   font-family:var(--serif); font-weight:500;
   font-size:clamp(10.5px,1.9svh,13px); letter-spacing:.17em; text-transform:uppercase;
-  color:var(--foil-deep); line-height:1.75;
-  text-shadow:0 1px 0 rgba(255,254,249,.95), 0 -.5px .5px rgba(120,96,58,.34);
+  color:#6a5324; line-height:1.75; font-weight:600;
+  text-shadow:var(--deboss);
 }
 .sub{
-  font-size:clamp(10px,1.7svh,12px); letter-spacing:.05em; color:var(--ink-soft);
+  font-size:clamp(10px,1.7svh,12px); letter-spacing:.05em; color:#7a6642;
   line-height:1.7; margin-top:.4em;
+  text-shadow:0 1px 0 rgba(255,254,250,.95), 0 -.5px .5px rgba(104,80,44,.30);
 }
 .eyebrow{
   font-family:var(--serif); font-weight:500;
   font-size:clamp(8px,1.5svh,10.5px); letter-spacing:.24em; text-transform:uppercase;
-  color:var(--foil); line-height:2.15;
-  text-shadow:0 1px 0 rgba(255,254,249,.95), 0 -.5px .5px rgba(120,96,58,.30);
+  color:#7d6330; line-height:2.15; font-weight:600;
+  text-shadow:var(--deboss);
 }
 .script{
   font-family:var(--serif); font-style:italic; font-weight:400;
@@ -233,7 +243,10 @@ body.sending .scroll{overflow:hidden}
       #c2a25e 52%, #6b5324 66%, #b8965a 80%, #7d6330 100%);
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 1px 0 rgba(255,254,249,.92)) drop-shadow(0 -.6px .6px rgba(118,94,56,.45));
+  filter:drop-shadow(0 1.2px 0 rgba(255,254,250,1))
+         drop-shadow(.6px 1.4px .8px rgba(255,254,250,.7))
+         drop-shadow(0 -.9px .7px rgba(100,78,44,.62))
+         drop-shadow(-.7px -.7px .5px rgba(100,78,44,.38));
 }
 .amp{
   font-family:var(--serif); font-style:italic; font-weight:300;
@@ -241,14 +254,28 @@ body.sending .scroll{overflow:hidden}
 }
 .quote{
   font-family:var(--serif); font-style:italic;
-  font-size:clamp(13px,2.3svh,16.5px); line-height:1.7; color:var(--foil-deep);
+  font-size:clamp(13px,2.3svh,16.5px); line-height:1.7; color:#6f5728;
+  text-shadow:var(--deboss);
 }
 
 /* ουράνια μοτίβα */
 .motif{display:block; margin:0 auto; fill:url(#foil)}
-.motif, .rule svg{
-  filter:drop-shadow(0 .6px 0 rgba(255,254,249,.92)) drop-shadow(0 -.5px .5px rgba(118,94,56,.5));
+.motif, .rule svg{ filter:url(#raised) }
+/* μαργαριτάρι: ίδιο υλικό με του φακέλου, με τον όγκο του */
+.prl, .rule::before, .rule::after{
+  flex:none; display:inline-block; border-radius:50%;
+  width:var(--d,7px); height:var(--d,7px);
+  background:radial-gradient(circle at 33% 26%,
+     #fffefc 0%, #fdf9f1 14%, #f0e7d7 44%, #dccfb6 74%, #c1b094 100%);
+  box-shadow:
+     0 1.2px 2px rgba(100,78,44,.52),
+     0 .4px .5px rgba(100,78,44,.34),
+     inset -.7px -.8px 1.3px rgba(150,124,84,.42),
+     inset .6px .6px .7px rgba(255,255,255,.96);
 }
+.rule::before, .rule::after{content:""; --d:6px}
+.prls{display:flex; align-items:center; justify-content:center; gap:8px; margin:.2em 0 0}
+
 .rule{display:flex; align-items:center; gap:.7em; width:70%; margin:clamp(12px,2.4svh,20px) auto}
 .rule i{flex:1; height:1px;
   background:linear-gradient(90deg,transparent,rgba(196,166,110,.75) 42%,rgba(150,120,70,.45) 58%,transparent);
@@ -276,12 +303,15 @@ body.sending .scroll{overflow:hidden}
   position:relative; flex:none; display:grid; place-items:center;
   width:clamp(32px,4.6svh,38px); height:clamp(32px,4.6svh,38px);
   padding:0; border-radius:50%; cursor:pointer;
-  color:var(--foil-deep);
-  background:linear-gradient(178deg,#fffdf8 0%,#f7efdd 52%,#efe2c9 100%);
-  border:1px solid rgba(150,120,70,.40);
-  box-shadow:0 1px 0 rgba(255,255,255,.95) inset,
-             0 -1px 0 rgba(150,120,70,.12) inset,
-             0 5px 11px -7px rgba(110,86,50,.75);
+  color:#6a5324;
+  background:radial-gradient(circle at 33% 26%,
+     #fffefc 0%, #fdf9f1 15%, #f4ebda 45%, #e5d8c0 76%, #d3c3a6 100%);
+  border:1px solid rgba(150,120,70,.44);
+  box-shadow:
+     0 1.6px 3.2px rgba(100,78,44,.44),
+     0 .5px .8px rgba(100,78,44,.30),
+     inset -.8px -1px 1.7px rgba(150,124,84,.34),
+     inset .7px .8px .9px rgba(255,255,255,.96);
   transition:transform 260ms var(--ease), box-shadow 260ms var(--ease),
              border-color 260ms var(--ease), background 260ms var(--ease);
   appearance:none; -webkit-appearance:none;
@@ -289,13 +319,15 @@ body.sending .scroll{overflow:hidden}
 /* γυαλάδα στο πάνω-αριστερό τόξο, όπως πέφτει ο ήλιος */
 .act::before{
   content:""; position:absolute; inset:1.5px; border-radius:50%; pointer-events:none;
-  background:linear-gradient(146deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.34) 26%,
-                             rgba(255,255,255,0) 52%, rgba(150,120,70,.10) 100%);
+  background:linear-gradient(146deg, rgba(255,255,255,.95) 0%, rgba(255,255,255,.30) 22%,
+                             rgba(255,255,255,0) 46%, rgba(150,120,70,.12) 100%);
 }
 .act svg{position:relative; width:46%; height:46%; fill:none; stroke:currentColor;
   stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
-.act:hover{transform:translateY(-1.5px); border-color:rgba(150,120,70,.75);
-  box-shadow:0 1px 0 rgba(255,255,255,.95) inset, 0 9px 16px -8px rgba(110,86,50,.8)}
+.act:hover{transform:translateY(-1.5px); border-color:rgba(150,120,70,.78);
+  box-shadow:0 3px 7px rgba(100,78,44,.42),
+             inset -.8px -1px 1.7px rgba(150,124,84,.30),
+             inset .7px .8px .9px rgba(255,255,255,.98)}
 .act:active{transform:translateY(0) scale(.94)}
 .act:focus-visible{outline:2px solid var(--foil); outline-offset:3px}
 .act.done{
@@ -384,21 +416,45 @@ body.sending .scroll{overflow:hidden}
 .send{
   display:flex; align-items:center; justify-content:center; gap:.7em;
   width:100%; margin-top:14px; padding:14px 20px; cursor:pointer;
-  border-radius:999px; color:#fffdf6;
-  font-family:var(--serif); font-weight:500;
+  position:relative;
+  padding-left:calc(clamp(30px,4.4svh,36px) + 26px);
+  padding-right:calc(clamp(30px,4.4svh,36px) + 26px);
+  border-radius:999px; color:#654e1e;
+  font-family:var(--serif); font-weight:600;
   font-size:clamp(10.5px,1.85svh,13px); letter-spacing:.28em; text-transform:uppercase;
-  background-image:linear-gradient(178deg,rgba(255,255,255,.42),rgba(255,255,255,0) 42%),
-                   linear-gradient(104deg,#c9a86f,#e6d2a6 22%,#a2854f 48%,#d7bd8d 72%,#8a6f42 100%);
-  border:1px solid rgba(122,98,52,.55);
-  text-shadow:0 1px 1px rgba(96,74,42,.5);
-  box-shadow:0 1px 0 rgba(255,255,255,.34) inset, 0 10px 20px -10px rgba(110,86,50,.9);
+  /* το ίδιο τούλι που δένει τον φάκελο, με λεπτό πέπλο ώστε να διαβάζεται */
+  background-color:#f6efe2;
+  background-image:linear-gradient(180deg, rgba(255,253,247,.50), rgba(255,249,236,.24) 46%,
+                                            rgba(255,250,238,.46)),
+                   url(art/bow-tulle.webp);
+  background-size:auto, cover;
+  background-position:center, center 42%;
+  border:1px solid rgba(150,120,70,.48);
+  text-shadow:var(--deboss);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+             inset 0 -1px 0 rgba(150,120,70,.16),
+             0 9px 20px -11px rgba(100,78,44,.8);
   transition:transform 240ms var(--ease), box-shadow 240ms var(--ease), filter 240ms var(--ease);
   appearance:none; -webkit-appearance:none;
 }
 .send svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5;
   stroke-linecap:round;stroke-linejoin:round}
-.send:hover{transform:translateY(-1.5px); filter:brightness(1.05);
-  box-shadow:0 1px 0 rgba(255,255,255,.34) inset, 0 15px 26px -12px rgba(110,86,50,.95)}
+.send:hover{transform:translateY(-1.5px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 15px 28px -13px rgba(100,78,44,.9)}
+.send:hover .clasp{filter:brightness(1.06)}
+/* το μαργαριτάρι-κούμπωμα: αληθινά pixel από τη φωτογραφία του φακέλου */
+.clasp{
+  --pw:8;
+  --bgx:calc((var(--pw)/2 - var(--px)) / (var(--pw) - 100) * 100%);
+  --bgy:calc((var(--pw)/2 - var(--py)/100*var(--ihpct)) / (var(--pw) - var(--ihpct)) * 100%);
+  position:absolute; left:13px; top:50%; translate:0 -50%;
+  width:clamp(28px,4.1svh,34px); aspect-ratio:1; border-radius:50%;
+  background:url(art/scene-9x16.webp) no-repeat;
+  background-size:calc(100% * 100 / var(--pw)) auto;
+  background-position:var(--bgx) var(--bgy);
+  box-shadow:0 2px 5px rgba(100,78,44,.55), 0 0 0 1px rgba(150,120,70,.35);
+  transition:filter 240ms var(--ease);
+}
 .send:active{transform:translateY(0) scale(.985)}
 .send:focus-visible{outline:2px solid var(--foil-deep); outline-offset:3px}
 .send[disabled]{opacity:.55; cursor:default; transform:none}
@@ -534,14 +590,22 @@ body.sent .caption svg{display:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <linearGradient id="foil" x1="10%" y1="0%" x2="90%" y2="100%">
-    <stop offset="0"   stop-color="#b89550"/>
-    <stop offset=".20" stop-color="#8f7133"/>
-    <stop offset=".42" stop-color="#dcc084"/>
-    <stop offset=".62" stop-color="#795f28"/>
-    <stop offset=".82" stop-color="#c3a35e"/>
-    <stop offset="1"   stop-color="#6f5726"/>
+  <!-- γυαλιστερό φύλλο χρυσού: στενή ανταύγεια, όπως σε τυπωμένο βερνίκι -->
+  <linearGradient id="foil" x1="8%" y1="0%" x2="92%" y2="100%">
+    <stop offset="0"    stop-color="#79601f"/>
+    <stop offset=".16"  stop-color="#ab8a41"/>
+    <stop offset=".31"  stop-color="#e7d29c"/>
+    <stop offset=".385" stop-color="#fffcf2"/>
+    <stop offset=".46"  stop-color="#d9bd80"/>
+    <stop offset=".63"  stop-color="#836727"/>
+    <stop offset=".79"  stop-color="#c2a054"/>
+    <stop offset="1"    stop-color="#68501d"/>
   </linearGradient>
+  <!-- όγκος: σκιά στη φορά του ήλιου, φωτεινό χείλος απέναντι -->
+  <filter id="raised" x="-40%" y="-40%" width="190%" height="190%">
+    <feDropShadow dx=".8" dy="1.4" stdDeviation=".9" flood-color="#634c24" flood-opacity=".55"/>
+    <feDropShadow dx="-.5" dy="-.7" stdDeviation=".25" flood-color="#fffdf6" flood-opacity=".95"/>
+  </filter>
 </defs></svg>
 
 <div class="bleed" aria-hidden="true"></div>
@@ -657,6 +721,11 @@ body.sent .caption svg{display:none}
         <div class="script" style="font-size:clamp(24px,4.2svh,34px)">Α <span class="amp" style="font-size:.6em">&amp;</span> Λ</div>
         <p class="quote" style="margin:.5em 0 0">«Άξιζε να υπάρξουμε<br>για να συναντηθούμε…»</p>
         <div class="lbl" style="margin:.9em 0 0">Γιάννης Ρίτσος</div>
+        <div class="prls" aria-hidden="true">
+          <i class="prl" style="--d:5px"></i>
+          <i class="prl" style="--d:8px"></i>
+          <i class="prl" style="--d:5px"></i>
+        </div>
       </div>
 
       <!-- 12 · διαμονή -->
@@ -725,7 +794,7 @@ body.sent .caption svg{display:none}
 
         <!-- 16 · αποστολή -->
         <button class="send" id="send" type="button">
-          <svg viewBox="0 0 24 24"><path d="M21.4 2.6 11 13"/><path d="M21.4 2.6 14.8 21.4l-3.9-8.3-8.3-3.9z"/></svg>
+          <span class="clasp" aria-hidden="true"></span>
           <span id="sendLbl">Αποστολή</span>
         </button>
         <div class="err" id="err" role="alert"></div>
