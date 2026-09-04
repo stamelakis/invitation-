@@ -19,20 +19,17 @@
    κέντρο χρυσού καπακιού  x = 769 → 51.54 %   y = 624 → 59.20 %
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --iw: 1492; --ih: 1054;
-  --ratio: 1.415560;      /* πλάτος / ύψος φωτογραφίας */
-  --ihpct: 70.6434;       /* ύψος ως % του πλάτους     */
+  --ihpct: 177.778;       /* το σκηνικό είναι 9:16 — ύψος ως % του πλάτους */
 
-  --px: 51.54;            /* κέντρο μαργαριταριού, % πλάτους */
-  --py: 59.20;            /* κέντρο μαργαριταριού, % ύψους   */
-  --pw: 8.4;              /* διάμετρος κουμπιού, % πλάτους   */
+  --px: 52.341;           /* κέντρο μαργαριταριού, % πλάτους */
+  --py: 55.558;           /* κέντρο μαργαριταριού, % ύψους   */
+  --pw: 12.769;           /* διάμετρος κουμπιού, % πλάτους   */
   --bgx: calc((var(--pw)/2 - var(--px)) / (var(--pw) - 100) * 100%);
   --bgy: calc((var(--pw)/2 - var(--py)/100*var(--ihpct)) / (var(--pw) - var(--ihpct)) * 100%);
 
   /* το κάδρο 9:16 */
   --fw: min(100vw, calc(100svh * 9 / 16));
   --fh: min(100svh, calc(100vw * 16 / 9));
-  --env: calc(var(--fw) * 1.52);        /* πλάτος της φωτογραφίας του φακέλου */
 
   --foil:      #a2854f;
   --foil-deep: #7a6234;
@@ -61,8 +58,8 @@ body{
   background:linear-gradient(177deg,#c3b1a1 0%,#c7b6a7 46%,#bba898 100%)}
 .bleed::before{
   content:""; position:absolute; inset:0;
-  background:url(art/envelope-closed.webp) no-repeat center;
-  background-size:auto calc(var(--env) / var(--ratio) * 2.4);
+  background:url(art/scene-9x16.webp) no-repeat center;
+  background-size:cover;
   filter:blur(76px) saturate(1.04); opacity:.46;
   /* σβήνει προς τις άκρες, ώστε να μη φαίνεται πού τελειώνει η εικόνα */
   -webkit-mask-image:radial-gradient(112% 96% at 50% 50%, #000 26%, rgba(0,0,0,0) 86%);
@@ -85,25 +82,18 @@ body{
    2 · Ο ΦΑΚΕΛΟΣ
    ═══════════════════════════════════════════════════════════════ */
 .env{
-  position:absolute; left:50%; top:50%;
-  width:var(--env); aspect-ratio:var(--iw) / var(--ih);
-  translate:-50% -50%;
-  transition:transform 1500ms var(--ease), filter 1200ms var(--ease), opacity 900ms var(--ease);
-  will-change:transform;
+  position:fixed; left:50%; top:50%; translate:-50% -50%;
+  /* πάντα 9:16 και σε όλο το ύψος της οθόνης: σε κινητό ξεχειλίζει λίγο
+     στα πλάγια, οπότε το σατέν φτάνει ως τις άκρες χωρίς καμία ραφή */
+  width:calc(100svh * 9 / 16); height:100svh;
+  box-shadow:0 0 44px 6px rgba(92,70,40,.28);
+  transition:transform 1400ms var(--ease), filter 1100ms var(--ease);
+  will-change:transform,filter;
 }
-.env img{
-  display:block; width:100%; height:100%;
-  -webkit-mask-image:
-     linear-gradient(to right,  rgba(0,0,0,0) 0, #000 5%, #000 95%, rgba(0,0,0,0) 100%),
-     linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 6%, #000 96%, rgba(0,0,0,0) 100%);
-          mask-image:
-     linear-gradient(to right,  rgba(0,0,0,0) 0, #000 5%, #000 95%, rgba(0,0,0,0) 100%),
-     linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 6%, #000 96%, rgba(0,0,0,0) 100%);
-  -webkit-mask-composite:source-in; mask-composite:intersect;
-}
-/* όταν η κάρτα βγαίνει, ο φάκελος κατεβαίνει και θολώνει ελαφρά */
-body.open .env{ transform:translateY(30%) scale(.92); filter:blur(1.4px) brightness(.98) }
-body.sending .env{ filter:none }
+.env img{display:block; width:100%; height:100%; object-fit:cover}
+/* όταν βγαίνει η κάρτα, ο φάκελος περνά σε βάθος πεδίου */
+body.open .env{ transform:scale(1.045); filter:blur(2.4px) brightness(.93) saturate(.95) }
+body.sending .env{ transform:scale(1.01); filter:blur(.6px) brightness(.98) }
 
 /* ── Το κουμπί του μαργαριταριού ── */
 .pearl{
@@ -117,7 +107,7 @@ body.sending .env{ filter:none }
 }
 .knot{
   position:absolute; inset:0; border-radius:50%;
-  background:url(art/envelope-closed.webp) no-repeat;
+  background:url(art/scene-9x16.webp) no-repeat;
   background-size:calc(100% * 100 / var(--pw)) auto;
   background-position:var(--bgx) var(--bgy);
   -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 54%, rgba(0,0,0,0) 100%);
@@ -154,14 +144,18 @@ body.open .halo{display:none}
   border-radius:50% 50% 50% 50% / 12.5% 12.5% 12.5% 12.5%;
   background-color:#efe4d2;
   background-image:url(art/card-paper.webp);
-  background-size:184% auto;          /* ίδια κλίμακα ανάγλυφου με τη φωτογραφία */
+  background-size:92% auto;           /* ίδια κλίμακα ανάγλυφου με τη φωτογραφία */
   background-position:center top;
   background-repeat:repeat;
   box-shadow:
-    0 1px 2px rgba(255,253,246,.8) inset,
-    0 0 0 1px rgba(150,120,70,.26),
-    0 26px 44px -20px rgba(96,74,42,.55),
-    0 6px 14px -8px rgba(96,74,42,.35);
+    /* το κοπτικό: η ακμή πιάνει φως πάνω-αριστερά, σκιάζει απέναντι */
+    inset 1.5px 1.5px 0 rgba(255,253,247,.95),
+    inset -1.5px -1.5px 0 rgba(126,100,60,.28),
+    0 0 0 1px rgba(150,120,70,.28),
+    /* η σκιά πέφτει στο σατέν, στη φορά του ήλιου */
+    22px 30px 40px -16px rgba(92,70,40,.52),
+    8px 12px 18px -9px rgba(92,70,40,.42),
+    0 2px 3px rgba(92,70,40,.26);
   opacity:0; visibility:hidden;
   transform:translateY(46%) scale(.62) rotateX(28deg);
   transform-origin:50% 100%;
@@ -176,8 +170,12 @@ body.open .card{
 .card::before{
   content:""; position:absolute; inset:0; pointer-events:none; z-index:2; border-radius:inherit;
   background:
-    radial-gradient(118% 76% at 26% 2%, rgba(255,253,247,.62), rgba(255,253,247,0) 58%),
-    radial-gradient(96% 64% at 82% 100%, rgba(184,152,102,.20), rgba(184,152,102,0) 62%);
+    linear-gradient(116deg, rgba(255,255,255,0) 27%, rgba(255,255,255,.17) 33%,
+                            rgba(255,255,255,.04) 38%, rgba(255,255,255,0) 44%),
+    linear-gradient(116deg, rgba(255,253,247,.34) 0%, rgba(255,252,244,.09) 26%,
+                            rgba(255,252,244,0) 48%, rgba(158,128,80,.09) 76%,
+                            rgba(128,100,58,.20) 100%),
+    radial-gradient(110% 68% at 15% 3%, rgba(255,254,250,.34), rgba(255,254,250,0) 64%);
 }
 /* διπλή χρυσή τριχοειδής — τυφλό ανάγλυφο πλαίσιο */
 .card::after{
@@ -195,8 +193,8 @@ body.open .card{
   padding:15% 12% 22%;
   scrollbar-width:none;
   /* το περιεχόμενο σβήνει απαλά στο τόξο, αντί να κόβεται */
-  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 8%, #000 92%, rgba(0,0,0,0) 100%);
-          mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 8%, #000 92%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 5.5%, #000 94.5%, rgba(0,0,0,0) 100%);
+          mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 5.5%, #000 94.5%, rgba(0,0,0,0) 100%);
 }
 .scroll::-webkit-scrollbar{display:none}
 body.sending .scroll{overflow:hidden}
@@ -208,12 +206,13 @@ body.sending .scroll{overflow:hidden}
   font-family:var(--serif); font-weight:500;
   font-size:clamp(8px,1.55svh,10.5px); letter-spacing:.34em; text-transform:uppercase;
   color:var(--foil-pale); margin-bottom:.75em;
+  text-shadow:0 1px 0 rgba(255,254,249,.9), 0 -.5px .5px rgba(120,96,58,.22);
 }
 .val{
   font-family:var(--serif); font-weight:500;
   font-size:clamp(10.5px,1.9svh,13px); letter-spacing:.17em; text-transform:uppercase;
   color:var(--foil-deep); line-height:1.75;
-  text-shadow:0 1px 0 rgba(255,253,246,.85);
+  text-shadow:0 1px 0 rgba(255,254,249,.95), 0 -.5px .5px rgba(120,96,58,.34);
 }
 .sub{
   font-size:clamp(10px,1.7svh,12px); letter-spacing:.05em; color:var(--ink-soft);
@@ -223,12 +222,18 @@ body.sending .scroll{overflow:hidden}
   font-family:var(--serif); font-weight:500;
   font-size:clamp(8px,1.5svh,10.5px); letter-spacing:.24em; text-transform:uppercase;
   color:var(--foil); line-height:2.15;
-  text-shadow:0 1px 0 rgba(255,253,246,.85);
+  text-shadow:0 1px 0 rgba(255,254,249,.95), 0 -.5px .5px rgba(120,96,58,.30);
 }
 .script{
   font-family:var(--serif); font-style:italic; font-weight:400;
-  font-size:clamp(28px,5.4svh,42px); line-height:1.05; color:var(--foil-deep);
-  text-shadow:0 1px 0 rgba(255,253,246,.9), 0 2px 4px rgba(140,112,72,.18);
+  font-size:clamp(28px,5.4svh,42px); line-height:1.05;
+  /* φύλλο χρυσού: το μέταλλο γυρίζει από σκούρο σε λαμπερό κατά μήκος του γράμματος */
+  background-image:linear-gradient(104deg,
+      #6f5626 0%, #a8863f 13%, #d9be82 23%, #7a5f2a 38%,
+      #c2a25e 52%, #6b5324 66%, #b8965a 80%, #7d6330 100%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 rgba(255,254,249,.92)) drop-shadow(0 -.6px .6px rgba(118,94,56,.45));
 }
 .amp{
   font-family:var(--serif); font-style:italic; font-weight:300;
@@ -240,10 +245,15 @@ body.sending .scroll{overflow:hidden}
 }
 
 /* ουράνια μοτίβα */
-.motif{display:block; margin:0 auto; fill:var(--foil-pale)}
+.motif{display:block; margin:0 auto; fill:url(#foil)}
+.motif, .rule svg{
+  filter:drop-shadow(0 .6px 0 rgba(255,254,249,.92)) drop-shadow(0 -.5px .5px rgba(118,94,56,.5));
+}
 .rule{display:flex; align-items:center; gap:.7em; width:70%; margin:clamp(12px,2.4svh,20px) auto}
-.rule i{flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent)}
-.rule svg{width:13px; height:13px; flex:none; fill:var(--foil-pale)}
+.rule i{flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(196,166,110,.75) 42%,rgba(150,120,70,.45) 58%,transparent);
+  box-shadow:0 1px 0 rgba(255,254,249,.85)}
+.rule svg{width:13px; height:13px; flex:none; fill:url(#foil)}
 
 /* ═══════════════════════════════════════════════════════════════
    4 · ΨΗΦΙΑΚΑ ΚΟΥΜΠΙΑ ΔΙΠΛΑ ΣΕ ΚΑΘΕ ΣΤΟΙΧΕΙΟ
@@ -276,8 +286,14 @@ body.sending .scroll{overflow:hidden}
              border-color 260ms var(--ease), background 260ms var(--ease);
   appearance:none; -webkit-appearance:none;
 }
-.act svg{width:46%; height:46%; fill:none; stroke:currentColor; stroke-width:1.5;
-  stroke-linecap:round; stroke-linejoin:round}
+/* γυαλάδα στο πάνω-αριστερό τόξο, όπως πέφτει ο ήλιος */
+.act::before{
+  content:""; position:absolute; inset:1.5px; border-radius:50%; pointer-events:none;
+  background:linear-gradient(146deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.34) 26%,
+                             rgba(255,255,255,0) 52%, rgba(150,120,70,.10) 100%);
+}
+.act svg{position:relative; width:46%; height:46%; fill:none; stroke:currentColor;
+  stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
 .act:hover{transform:translateY(-1.5px); border-color:rgba(150,120,70,.75);
   box-shadow:0 1px 0 rgba(255,255,255,.95) inset, 0 9px 16px -8px rgba(110,86,50,.8)}
 .act:active{transform:translateY(0) scale(.94)}
@@ -300,7 +316,9 @@ body.sending .scroll{overflow:hidden}
   font-size:clamp(9.5px,1.72svh,12px); letter-spacing:.15em; text-transform:uppercase;
   background:linear-gradient(178deg,#fffdf8,#f4ecd9);
   border:1px solid rgba(150,120,70,.36);
-  box-shadow:0 1px 0 rgba(255,255,255,.95) inset, 0 5px 12px -8px rgba(110,86,50,.6);
+  box-shadow:0 1px 0 rgba(255,255,255,.95) inset,
+             0 -1px 0 rgba(150,120,70,.10) inset,
+             0 5px 12px -8px rgba(110,86,50,.6);
   transition:all 280ms var(--ease);
   appearance:none; -webkit-appearance:none;
 }
@@ -369,7 +387,8 @@ body.sending .scroll{overflow:hidden}
   border-radius:999px; color:#fffdf6;
   font-family:var(--serif); font-weight:500;
   font-size:clamp(10.5px,1.85svh,13px); letter-spacing:.28em; text-transform:uppercase;
-  background:linear-gradient(178deg,#d0b483,#a2854f 60%,#8a6f42);
+  background-image:linear-gradient(178deg,rgba(255,255,255,.42),rgba(255,255,255,0) 42%),
+                   linear-gradient(104deg,#c9a86f,#e6d2a6 22%,#a2854f 48%,#d7bd8d 72%,#8a6f42 100%);
   border:1px solid rgba(122,98,52,.55);
   text-shadow:0 1px 1px rgba(96,74,42,.5);
   box-shadow:0 1px 0 rgba(255,255,255,.34) inset, 0 10px 20px -10px rgba(110,86,50,.9);
@@ -416,7 +435,7 @@ body.sending #card{opacity:0; visibility:hidden; transition:opacity 1ms}
   transform:rotateX(180deg);
   background-color:#efe4d2;
   background-image:url(art/card-paper.webp);
-  background-size:184% auto; background-position:center; background-repeat:repeat;
+  background-size:92% auto; background-position:center; background-repeat:repeat;
   box-shadow:inset 0 0 40px rgba(120,96,58,.22), inset 0 0 0 1px rgba(150,120,70,.22);
 }
 .face.back::after{
@@ -479,7 +498,7 @@ body.sent .caption svg{display:none}
   border-radius:24px 24px 0 0; text-align:center;
   background-color:#f3e9d8;
   background-image:url(art/card-paper.webp);
-  background-size:150% auto; background-position:center top; background-repeat:repeat;
+  background-size:76% auto; background-position:center top; background-repeat:repeat;
   box-shadow:0 -1px 0 rgba(255,253,246,.8) inset, 0 -24px 50px -20px rgba(70,52,30,.7);
   transform:translateY(24px); transition:transform 380ms var(--ease);
 }
@@ -514,14 +533,25 @@ body.sent .caption svg{display:none}
 }
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="foil" x1="10%" y1="0%" x2="90%" y2="100%">
+    <stop offset="0"   stop-color="#b89550"/>
+    <stop offset=".20" stop-color="#8f7133"/>
+    <stop offset=".42" stop-color="#dcc084"/>
+    <stop offset=".62" stop-color="#795f28"/>
+    <stop offset=".82" stop-color="#c3a35e"/>
+    <stop offset="1"   stop-color="#6f5726"/>
+  </linearGradient>
+</defs></svg>
+
 <div class="bleed" aria-hidden="true"></div>
 
 <div class="frame">
 
   <!-- ═══ Ο ΦΑΚΕΛΟΣ ═══ -->
   <div class="env" id="env">
-    <img src="art/envelope-closed.webp" width="1492" height="1054" fetchpriority="high"
-         alt="Ο φάκελος της πρόσκλησης: περλέ κοχύλι δεμένο με κορδέλα και μαργαριτάρι">
+    <img src="art/scene-9x16.webp" width="1242" height="2208" fetchpriority="high"
+         alt="Ο φάκελος της πρόσκλησης: περλέ κοχύλι δεμένο με κορδέλα και μαργαριτάρι, πάνω σε σατέν">
     <button class="pearl" id="pearl" type="button" aria-label="Ανοίξτε την πρόσκληση" aria-expanded="false">
       <span class="knot" aria-hidden="true"></span>
       <span class="gleam" aria-hidden="true"></span>
