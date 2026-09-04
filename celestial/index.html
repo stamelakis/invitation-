@@ -1,151 +1,138 @@
 <!-- Ψηφιακή πρόσκληση γάμου — Ανδρέας & Λίνα · 26.09.2026
-     ΒΗΜΑ 1 — ο φάκελος κλειστός· άγγιγμα στο μαργαριτάρι τον ανοίγει.
-     Τα υλικά είναι οι πραγματικές φωτογραφίες (celestial/art/), όχι σχέδια. -->
+     Κάδρο 9:16. Ο φάκελος και το χαρτί της κάρτας είναι οι πραγματικές
+     φωτογραφίες (celestial/art/), όχι σχεδιασμένα γραφικά.
+       σκηνή 1  ο φάκελος κλειστός — άγγιγμα στο μαργαριτάρι
+       σκηνή 2  η κάρτα βγαίνει από τον φάκελο, με κουμπί σε κάθε στοιχείο
+       σκηνή 3  «Αποστολή» — η κάρτα διπλώνει και μπαίνει πίσω στον φάκελο -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#e9dcc6">
+<meta name="theme-color" content="#bfac9c">
 <meta name="robots" content="noindex, nofollow">
 <title>Ανδρέας &amp; Λίνα — Πρόσκληση Γάμου</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="art/envelope-open.webp">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-/* ─────────────────────────────────────────────────────────────
-   Γεωμετρία μετρημένη πάνω στη φωτογραφία (1492 × 1054 px)
-   με προσαρμογή κύκλου στο περίγραμμα του χρυσού καπακιού:
-   κέντρο  x = 769 px → 51.54 %   ·   y = 624 px → 59.20 %
-   ακτίνα καπακιού ≈ 46 px  ·  περιοχή αφής ≈ 63 px (≥ 48 px σε κινητό)
-   Όλα τα υπόλοιπα προκύπτουν από αυτούς τους αριθμούς.
-   ───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   1 · ΣΤΑΘΕΡΕΣ
+   Γεωμετρία μετρημένη πάνω στη φωτογραφία (1492 × 1054):
+   κέντρο χρυσού καπακιού  x = 769 → 51.54 %   y = 624 → 59.20 %
+   ═══════════════════════════════════════════════════════════════ */
 :root{
-  --iw: 1492;            /* πλάτος φωτογραφίας  */
-  --ih: 1054;            /* ύψος φωτογραφίας    */
-  --ratio: 1.415560;     /* iw / ih             */
-  --ihpct: 70.6434;      /* ύψος ως % του πλάτους */
+  --iw: 1492; --ih: 1054;
+  --ratio: 1.415560;      /* πλάτος / ύψος φωτογραφίας */
+  --ihpct: 70.6434;       /* ύψος ως % του πλάτους     */
 
-  --px: 51.54;           /* κέντρο μαργαριταριού, % του πλάτους */
-  --py: 59.20;           /* κέντρο μαργαριταριού, % του ύψους   */
-  --pw: 8.4;             /* διάμετρος κουμπιού, % του πλάτους   */
-
-  /* θέση του φόντου ώστε το καπάκι να πέφτει ακριβώς στο κέντρο του κουμπιού */
+  --px: 51.54;            /* κέντρο μαργαριταριού, % πλάτους */
+  --py: 59.20;            /* κέντρο μαργαριταριού, % ύψους   */
+  --pw: 8.4;              /* διάμετρος κουμπιού, % πλάτους   */
   --bgx: calc((var(--pw)/2 - var(--px)) / (var(--pw) - 100) * 100%);
   --bgy: calc((var(--pw)/2 - var(--py)/100*var(--ihpct)) / (var(--pw) - var(--ihpct)) * 100%);
 
-  /* πλάτος της φωτογραφίας στην οθόνη — το μοιράζονται κάδρο και φόντο,
-     ώστε να είναι απόλυτα ευθυγραμμισμένα και να μη φαίνεται ραφή */
-  --plate: min(96vw, calc(87svh * var(--ratio)));
+  /* το κάδρο 9:16 */
+  --fw: min(100vw, calc(100svh * 9 / 16));
+  --fh: min(100svh, calc(100vw * 16 / 9));
+  --env: calc(var(--fw) * 1.52);        /* πλάτος της φωτογραφίας του φακέλου */
 
   --foil:      #a2854f;
-  --foil-deep: #7f6739;
+  --foil-deep: #7a6234;
+  --foil-pale: #c6ab77;
+  --ink:       #6d5b3e;
+  --ink-soft:  #8b7857;
+  --line:      rgba(150,120,70,.30);
+
   --serif: "Cormorant Garamond","EB Garamond",Palatino,Georgia,serif;
+  --body:  "EB Garamond","Cormorant Garamond",Palatino,Georgia,serif;
   --ease:  cubic-bezier(.22,.68,.24,1);
+  --ease-soft: cubic-bezier(.36,.04,.20,1);
 }
 
 *{box-sizing:border-box}
-html,body{margin:0; height:100%}
+html,body{margin:0; height:100%; overflow:hidden}
 body{
-  background:#e9dcc6;
-  overflow:hidden;
-  font-family:var(--serif);
+  background:#bfac9c;
+  font-family:var(--body);
   -webkit-font-smoothing:antialiased;
   -webkit-tap-highlight-color:transparent;
 }
 
-.stage{position:fixed; inset:0; overflow:hidden}
-
-/* Το κάδρο: πάντα κεντραρισμένο, ακόμη κι όταν ξεπερνά την οθόνη
-   (το grid centering «κολλάει» τα υπερμεγέθη στοιχεία στην άκρη). */
-.frame{
-  position:absolute; left:50%; top:50%; translate:-50% -50%;
-  width:var(--plate); aspect-ratio:var(--iw) / var(--ih);
-}
-@media (max-aspect-ratio: 1/1){
-  :root{ --plate: min(170vw, calc(95svh * var(--ratio))) }
-}
-
-/* ── Το σατέν συνεχίζεται πέρα από τη φωτογραφία ──
-   Ίδια εικόνα, μεγεθυσμένη και θολή: το φόντο δένει σε κάθε οθόνη
-   χωρίς να ζωγραφίσουμε τίποτα καινούργιο. */
-.bleed{
-  position:absolute; inset:0; z-index:0;
-  /* Το σατέν γύρω από το κάδρο, στον ίδιο ακριβώς τόνο με τις άκρες
-     της φωτογραφίας (δειγματοληψία: πάνω #c3b1a2, κάτω #b9a595). */
-  background:linear-gradient(177deg, #c7b5a6 0%, #c0ad9d 48%, #b6a291 100%);
-}
-/* θολή η ίδια φωτογραφία από πάνω: δίνει ζωή στο ύφασμα χωρίς να ανοίγει ο τόνος */
+/* ── Το σατέν: γεμίζει όλη την οθόνη, στον τόνο των άκρων της φωτογραφίας ── */
+.bleed{position:fixed; inset:0; z-index:0; overflow:hidden;
+  background:linear-gradient(177deg,#c3b1a1 0%,#c7b6a7 46%,#bba898 100%)}
 .bleed::before{
   content:""; position:absolute; inset:0;
   background:url(art/envelope-closed.webp) no-repeat center;
-  background-size:auto calc(var(--plate) / var(--ratio) * 2.15);
-  filter:blur(76px) saturate(1.04);
-  opacity:.46;
+  background-size:auto calc(var(--env) / var(--ratio) * 2.4);
+  filter:blur(76px) saturate(1.04); opacity:.46;
+  /* σβήνει προς τις άκρες, ώστε να μη φαίνεται πού τελειώνει η εικόνα */
+  -webkit-mask-image:radial-gradient(112% 96% at 50% 50%, #000 26%, rgba(0,0,0,0) 86%);
+          mask-image:radial-gradient(112% 96% at 50% 50%, #000 26%, rgba(0,0,0,0) 86%);
 }
 .bleed::after{
   content:""; position:absolute; inset:0;
-  background:radial-gradient(128% 104% at 50% 48%, rgba(0,0,0,0) 62%, rgba(104,82,52,.16) 100%);
+  background:radial-gradient(128% 100% at 50% 44%, rgba(0,0,0,0) 58%, rgba(104,82,52,.18) 100%);
 }
 
-/* ── Η φωτογραφία ── */
-.plate{
-  position:absolute; inset:0; z-index:1;
-  transition:opacity 1100ms var(--ease), transform 1500ms var(--ease), filter 900ms var(--ease);
+/* ── Το κάδρο 9:16 ── */
+.frame{
+  position:fixed; left:50%; top:50%; translate:-50% -50%;
+  width:var(--fw); height:var(--fh);
+  z-index:1; overflow:hidden;
+  display:grid; place-items:center;
 }
-.plate img{
-  display:block; width:100%; height:100%; object-fit:contain;
-  /* Οι άκρες σβήνουν μέσα στο θολό σατέν: το κάδρο δεν έχει περίγραμμα,
-     η ύφανση απλώς συνεχίζει προς τα έξω. */
+
+/* ═══════════════════════════════════════════════════════════════
+   2 · Ο ΦΑΚΕΛΟΣ
+   ═══════════════════════════════════════════════════════════════ */
+.env{
+  position:absolute; left:50%; top:50%;
+  width:var(--env); aspect-ratio:var(--iw) / var(--ih);
+  translate:-50% -50%;
+  transition:transform 1500ms var(--ease), filter 1200ms var(--ease), opacity 900ms var(--ease);
+  will-change:transform;
+}
+.env img{
+  display:block; width:100%; height:100%;
   -webkit-mask-image:
-     linear-gradient(to right,  rgba(0,0,0,0) 0, #000 4%, #000 96%, rgba(0,0,0,0) 100%),
-     linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 5.5%, #000 97%, rgba(0,0,0,0) 100%);
+     linear-gradient(to right,  rgba(0,0,0,0) 0, #000 5%, #000 95%, rgba(0,0,0,0) 100%),
+     linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 6%, #000 96%, rgba(0,0,0,0) 100%);
           mask-image:
-     linear-gradient(to right,  rgba(0,0,0,0) 0, #000 4%, #000 96%, rgba(0,0,0,0) 100%),
-     linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 5.5%, #000 97%, rgba(0,0,0,0) 100%);
-  -webkit-mask-composite:source-in;
-          mask-composite:intersect;
+     linear-gradient(to right,  rgba(0,0,0,0) 0, #000 5%, #000 95%, rgba(0,0,0,0) 100%),
+     linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 6%, #000 96%, rgba(0,0,0,0) 100%);
+  -webkit-mask-composite:source-in; mask-composite:intersect;
 }
+/* όταν η κάρτα βγαίνει, ο φάκελος κατεβαίνει και θολώνει ελαφρά */
+body.open .env{ transform:translateY(30%) scale(.92); filter:blur(1.4px) brightness(.98) }
+body.sending .env{ filter:none }
 
-.plate.open{ opacity:0; transform:scale(1.035); pointer-events:none }
-
-/* ═══ ΤΟ ΚΟΥΜΠΙ ΤΟΥ ΜΑΡΓΑΡΙΤΑΡΙΟΥ ═══════════════════════════
-   Δεν σχεδιάζεται μαργαριτάρι: το κουμπί κρατά το ίδιο κομμάτι
-   της φωτογραφίας, κομμένο σε κύκλο, ώστε το πραγματικό
-   μαργαριτάρι να ανασηκώνεται και να πιάνει φως στο άγγιγμα. */
+/* ── Το κουμπί του μαργαριταριού ── */
 .pearl{
-  position:absolute; z-index:3;
+  position:absolute; z-index:4;
   left:calc(var(--px) * 1%); top:calc(var(--py) * 1%);
   width:calc(var(--pw) * 1%); aspect-ratio:1;
   translate:-50% -50%;
-  padding:0; border:0; background:none; border-radius:50%;
-  cursor:pointer; appearance:none; -webkit-appearance:none;
+  padding:0; border:0; background:none; border-radius:50%; cursor:pointer;
+  appearance:none; -webkit-appearance:none;
+  transition:opacity 600ms var(--ease);
 }
-.pearl:disabled{cursor:default}
-
-/* το ίδιο το μαργαριτάρι — αληθινά pixel, όχι γραφικό */
 .knot{
   position:absolute; inset:0; border-radius:50%;
   background:url(art/envelope-closed.webp) no-repeat;
   background-size:calc(100% * 100 / var(--pw)) auto;
   background-position:var(--bgx) var(--bgy);
-  /* απαλή άκρη: η μεγέθυνση δένει με τη γύρω φωτογραφία, χωρίς ραφή */
   -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 54%, rgba(0,0,0,0) 100%);
           mask-image:radial-gradient(circle at 50% 50%, #000 54%, rgba(0,0,0,0) 100%);
   transition:transform 520ms var(--ease), filter 520ms var(--ease);
-  will-change:transform;
 }
-.pearl:hover  .knot{ transform:scale(1.055); filter:brightness(1.055) }
-.pearl:active .knot{ transform:scale(.988);  filter:brightness(1.02)  }
-
-/* λάμψη που γεννιέται πάνω στο μαργαριτάρι */
+.pearl:hover  .knot{transform:scale(1.055); filter:brightness(1.055)}
+.pearl:active .knot{transform:scale(.988)}
+.pearl:focus-visible .knot{box-shadow:0 0 0 2px #fffdf6, 0 0 0 4.5px var(--foil)}
 .gleam{
-  position:absolute; inset:-4%; border-radius:50%; pointer-events:none;
-  background:radial-gradient(circle at 44% 38%,
-    rgba(255,253,247,.85) 0%, rgba(255,250,238,.40) 34%, rgba(255,248,232,0) 68%);
-  opacity:0; transition:opacity 520ms var(--ease);
+  position:absolute; inset:-4%; border-radius:50%; pointer-events:none; opacity:0;
+  background:radial-gradient(circle at 44% 38%, rgba(255,253,247,.85), rgba(255,250,238,.4) 34%, rgba(255,248,232,0) 68%);
+  transition:opacity 520ms var(--ease);
 }
 .pearl:hover .gleam{opacity:.42}
-
-/* δύο δαχτυλίδια φωτός που ανοίγουν προς τα έξω */
 .halo{position:absolute; inset:0; pointer-events:none}
 .halo i{
   position:absolute; inset:0; border-radius:50%;
@@ -154,139 +141,1000 @@ body{
   animation:halo 3.6s var(--ease) infinite;
 }
 .halo i:nth-child(2){animation-delay:1.8s}
-@keyframes halo{
-  0%   {transform:scale(.94); opacity:0}
-  18%  {opacity:.9}
-  100% {transform:scale(2.15); opacity:0}
-}
-.pearl:focus-visible{outline:none}
-.pearl:focus-visible .knot{
-  box-shadow:0 0 0 2px #fffdf6, 0 0 0 4.5px var(--foil);
-}
+@keyframes halo{0%{transform:scale(.94);opacity:0} 18%{opacity:.9} 100%{transform:scale(2.15);opacity:0}}
+body.open .pearl{opacity:0; pointer-events:none}
+body.open .halo{display:none}
 
-/* ═══ Λεζάντα ═══ */
-.hint{
-  position:fixed; z-index:4; left:50%; bottom:max(4svh,22px);
-  translate:-50% 0;
-  display:flex; flex-direction:column; align-items:center; gap:.85em;
-  color:#6d5931;
-  font-size:clamp(10.5px,1.2vw,13px);
-  letter-spacing:.32em; text-transform:uppercase; font-weight:500;
-  text-shadow:
-    0 1px 0 rgba(255,253,246,.95), 0 0 6px rgba(255,252,244,.95),
-    0 0 16px rgba(255,251,240,.9), 0 0 30px rgba(255,250,236,.7);
-  opacity:0; animation:fadeUp 1400ms var(--ease) 900ms forwards;
-  transition:opacity 600ms var(--ease), translate 600ms var(--ease);
-  pointer-events:none; text-align:center; padding:0 20px;
-}
-.hint svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.1;
-  stroke-linecap:round; stroke-linejoin:round; animation:tap 2.8s var(--ease) infinite}
-@keyframes fadeUp{from{opacity:0; translate:-50% 12px} to{opacity:.92; translate:-50% 0}}
-@keyframes tap{0%,100%{transform:translateY(0)} 45%{transform:translateY(-6px)}}
-
-/* ═══ Το άνοιγμα ═══ */
-body.opening .plate.closed{ opacity:0; transform:scale(1.055); filter:brightness(1.06) }
-body.opening .plate.open  { opacity:1; transform:scale(1); pointer-events:auto }
-body.opening .hint        { animation:none; opacity:0; translate:-50% 10px }
-body.opening .pearl       { pointer-events:none }
-
-/* η αναλαμπή τη στιγμή του αγγίγματος */
-.flash{
-  position:absolute; z-index:5; left:calc(var(--px) * 1%); top:calc(var(--py) * 1%);
-  width:calc(var(--pw) * 1%); aspect-ratio:1; translate:-50% -50%;
-  border-radius:50%; pointer-events:none; opacity:0;
-  background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,250,236,.6) 30%, rgba(255,246,226,0) 70%);
-}
-body.opening .flash{ animation:flash 1200ms var(--ease) forwards }
-@keyframes flash{
-  0%  {opacity:0;  transform:scale(.6)}
-  16% {opacity:.95; transform:scale(1.5)}
-  100%{opacity:0;  transform:scale(5.5)}
-}
-
-/* ═══ Επανάληψη (για δοκιμή) ═══ */
-.again{
-  position:fixed; z-index:6; left:50%; bottom:max(4svh,22px); translate:-50% 8px;
-  padding:11px 26px; border-radius:999px; cursor:pointer;
-  font-family:var(--serif); font-size:11px; letter-spacing:.28em; text-transform:uppercase;
-  color:var(--foil-deep); background:rgba(255,253,247,.82);
-  border:1px solid rgba(162,133,79,.42);
-  box-shadow:0 8px 22px -12px rgba(96,74,42,.55);
-  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+/* ═══════════════════════════════════════════════════════════════
+   3 · Η ΚΑΡΤΑ — χαρτί από τη φωτογραφία, κείμενο ζωντανό
+   ═══════════════════════════════════════════════════════════════ */
+.card{
+  position:absolute; z-index:3;
+  width:87%; height:85%;
+  border-radius:50% 50% 50% 50% / 12.5% 12.5% 12.5% 12.5%;
+  background-color:#efe4d2;
+  background-image:url(art/card-paper.webp);
+  background-size:184% auto;          /* ίδια κλίμακα ανάγλυφου με τη φωτογραφία */
+  background-position:center top;
+  background-repeat:repeat;
+  box-shadow:
+    0 1px 2px rgba(255,253,246,.8) inset,
+    0 0 0 1px rgba(150,120,70,.26),
+    0 26px 44px -20px rgba(96,74,42,.55),
+    0 6px 14px -8px rgba(96,74,42,.35);
   opacity:0; visibility:hidden;
-  transition:opacity 600ms var(--ease) 1500ms, translate 600ms var(--ease) 1500ms, visibility 0s linear 2100ms;
+  transform:translateY(46%) scale(.62) rotateX(28deg);
+  transform-origin:50% 100%;
+  transition:transform 1500ms var(--ease), opacity 900ms var(--ease), visibility 0s linear 1500ms;
+  overflow:hidden;
 }
-body.opening .again{opacity:1; visibility:visible; translate:-50% 0; transition-delay:1500ms,1500ms,0s}
-.again:hover{background:#fffdf7; border-color:rgba(162,133,79,.8)}
+body.open .card{
+  opacity:1; visibility:visible; transform:translateY(0) scale(1) rotateX(0deg);
+  transition-delay:180ms,180ms,0s;
+}
+/* λεπτή περλέ λάμψη + κόκκος πάνω στο χαρτί */
+.card::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:2; border-radius:inherit;
+  background:
+    radial-gradient(118% 76% at 26% 2%, rgba(255,253,247,.62), rgba(255,253,247,0) 58%),
+    radial-gradient(96% 64% at 82% 100%, rgba(184,152,102,.20), rgba(184,152,102,0) 62%);
+}
+/* διπλή χρυσή τριχοειδής — τυφλό ανάγλυφο πλαίσιο */
+.card::after{
+  content:""; position:absolute; inset:11px; pointer-events:none; z-index:2;
+  border:1px solid rgba(150,120,70,.34);
+  border-radius:50% 50% 50% 50% / 12% 12% 12% 12%;
+  box-shadow:0 0 0 4px rgba(255,253,246,.5), inset 0 0 0 4px rgba(255,253,246,.4),
+             inset 0 0 0 5px rgba(150,120,70,.16);
+}
+
+.scroll{
+  position:absolute; inset:0; z-index:1;
+  overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:15% 12% 22%;
+  scrollbar-width:none;
+  /* το περιεχόμενο σβήνει απαλά στο τόξο, αντί να κόβεται */
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 8%, #000 92%, rgba(0,0,0,0) 100%);
+          mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 8%, #000 92%, rgba(0,0,0,0) 100%);
+}
+.scroll::-webkit-scrollbar{display:none}
+body.sending .scroll{overflow:hidden}
+
+/* ── Τυπογραφία θερμοτυπίας ── */
+.grp{text-align:center; margin:0 0 clamp(16px,3.2svh,26px)}
+.grp:last-child{margin-bottom:0}
+.lbl{
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(8px,1.55svh,10.5px); letter-spacing:.34em; text-transform:uppercase;
+  color:var(--foil-pale); margin-bottom:.75em;
+}
+.val{
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(10.5px,1.9svh,13px); letter-spacing:.17em; text-transform:uppercase;
+  color:var(--foil-deep); line-height:1.75;
+  text-shadow:0 1px 0 rgba(255,253,246,.85);
+}
+.sub{
+  font-size:clamp(10px,1.7svh,12px); letter-spacing:.05em; color:var(--ink-soft);
+  line-height:1.7; margin-top:.4em;
+}
+.eyebrow{
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(8px,1.5svh,10.5px); letter-spacing:.24em; text-transform:uppercase;
+  color:var(--foil); line-height:2.15;
+  text-shadow:0 1px 0 rgba(255,253,246,.85);
+}
+.script{
+  font-family:var(--serif); font-style:italic; font-weight:400;
+  font-size:clamp(28px,5.4svh,42px); line-height:1.05; color:var(--foil-deep);
+  text-shadow:0 1px 0 rgba(255,253,246,.9), 0 2px 4px rgba(140,112,72,.18);
+}
+.amp{
+  font-family:var(--serif); font-style:italic; font-weight:300;
+  font-size:clamp(16px,2.8svh,22px); color:var(--foil-pale); margin:.1em 0;
+}
+.quote{
+  font-family:var(--serif); font-style:italic;
+  font-size:clamp(13px,2.3svh,16.5px); line-height:1.7; color:var(--foil-deep);
+}
+
+/* ουράνια μοτίβα */
+.motif{display:block; margin:0 auto; fill:var(--foil-pale)}
+.rule{display:flex; align-items:center; gap:.7em; width:70%; margin:clamp(12px,2.4svh,20px) auto}
+.rule i{flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.rule svg{width:13px; height:13px; flex:none; fill:var(--foil-pale)}
+
+/* ═══════════════════════════════════════════════════════════════
+   4 · ΨΗΦΙΑΚΑ ΚΟΥΜΠΙΑ ΔΙΠΛΑ ΣΕ ΚΑΘΕ ΣΤΟΙΧΕΙΟ
+   ═══════════════════════════════════════════════════════════════ */
+.line{
+  --actw:clamp(32px,4.6svh,38px); --btns:1;
+  display:flex; align-items:center; justify-content:center; gap:.55em;
+  flex-wrap:nowrap; width:100%;
+}
+/* αόρατο διάκενο: κρατά το κείμενο στο κέντρο της κάρτας */
+.line::before{
+  content:""; flex:none;
+  width:calc(var(--btns) * var(--actw) + (var(--btns) - 1) * .55em);
+}
+.line > :first-of-type{min-width:0}
+.line.two{--actw:clamp(30px,3.9svh,34px); --btns:2}
+.line .script{margin:0}
+
+.act{
+  position:relative; flex:none; display:grid; place-items:center;
+  width:clamp(32px,4.6svh,38px); height:clamp(32px,4.6svh,38px);
+  padding:0; border-radius:50%; cursor:pointer;
+  color:var(--foil-deep);
+  background:linear-gradient(178deg,#fffdf8 0%,#f7efdd 52%,#efe2c9 100%);
+  border:1px solid rgba(150,120,70,.40);
+  box-shadow:0 1px 0 rgba(255,255,255,.95) inset,
+             0 -1px 0 rgba(150,120,70,.12) inset,
+             0 5px 11px -7px rgba(110,86,50,.75);
+  transition:transform 260ms var(--ease), box-shadow 260ms var(--ease),
+             border-color 260ms var(--ease), background 260ms var(--ease);
+  appearance:none; -webkit-appearance:none;
+}
+.act svg{width:46%; height:46%; fill:none; stroke:currentColor; stroke-width:1.5;
+  stroke-linecap:round; stroke-linejoin:round}
+.act:hover{transform:translateY(-1.5px); border-color:rgba(150,120,70,.75);
+  box-shadow:0 1px 0 rgba(255,255,255,.95) inset, 0 9px 16px -8px rgba(110,86,50,.8)}
+.act:active{transform:translateY(0) scale(.94)}
+.act:focus-visible{outline:2px solid var(--foil); outline-offset:3px}
+.act.done{
+  color:#5c7452; border-color:#a6bd9d;
+  background:linear-gradient(178deg,#fbfdf9,#e8f0e3);
+}
+.act.sm{width:clamp(30px,3.9svh,34px); height:clamp(30px,3.9svh,34px)}
+/* περιοχή αφής μεγαλύτερη από το ίδιο το κουμπί — άνετη με το δάχτυλο */
+.act::after{content:""; position:absolute; inset:-8px; border-radius:50%}
+
+/* ── RSVP: τρία κουμπιά ── */
+.rsvp{display:flex; flex-direction:column; gap:8px; margin-top:.2em}
+.opt{
+  display:flex; align-items:center; gap:.75em;
+  width:100%; padding:11px 15px; cursor:pointer; text-align:left;
+  border-radius:999px; color:var(--foil-deep);
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(9.5px,1.72svh,12px); letter-spacing:.15em; text-transform:uppercase;
+  background:linear-gradient(178deg,#fffdf8,#f4ecd9);
+  border:1px solid rgba(150,120,70,.36);
+  box-shadow:0 1px 0 rgba(255,255,255,.95) inset, 0 5px 12px -8px rgba(110,86,50,.6);
+  transition:all 280ms var(--ease);
+  appearance:none; -webkit-appearance:none;
+}
+.opt svg{width:17px; height:17px; flex:none; fill:none; stroke:currentColor;
+  stroke-width:1.45; stroke-linecap:round; stroke-linejoin:round}
+.opt span{flex:1; line-height:1.35}
+.opt:hover{border-color:rgba(150,120,70,.7); transform:translateY(-1px)}
+.opt:focus-visible{outline:2px solid var(--foil); outline-offset:2px}
+.opt[aria-pressed="true"]{
+  color:#fffdf6; border-color:rgba(122,98,52,.6);
+  background:linear-gradient(178deg,#cbaf7f,#a2854f);
+  text-shadow:0 1px 1px rgba(96,74,42,.45);
+  box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 8px 16px -8px rgba(110,86,50,.85);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   5 · ΤΟ ΠΛΑΙΣΙΟ ΤΗΣ ΕΥΧΗΣ — λάμψη πάνω στα γράμματα
+   ═══════════════════════════════════════════════════════════════ */
+.wishBox{
+  position:relative; border-radius:16px; overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,253,247,.74), rgba(250,242,228,.48));
+  border:1px solid rgba(150,120,70,.32);
+  box-shadow:inset 0 2px 7px rgba(150,122,80,.10), 0 1px 0 rgba(255,255,255,.7);
+  transition:border-color 260ms var(--ease), box-shadow 260ms var(--ease);
+}
+.wishBox:focus-within{
+  border-color:rgba(150,120,70,.66);
+  box-shadow:inset 0 2px 7px rgba(150,122,80,.08), 0 0 0 3px rgba(198,171,119,.26);
+}
+.mirror, .wishBox textarea{
+  font-family:var(--body);
+  font-size:clamp(12.5px,2.05svh,15px);
+  line-height:1.75; letter-spacing:.01em;
+  padding:13px 15px; margin:0; border:0;
+  white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;
+}
+.mirror{
+  position:absolute; inset:0; color:var(--ink);
+  pointer-events:none; overflow:hidden;
+}
+.mirror .ph{color:#b3a289; font-style:italic}
+/* κάθε πρόσφατο γράμμα κρατά λίγη λάμψη, που σβήνει προς τα πίσω */
+.mirror b{font-weight:inherit; color:#8a7040}
+.wishBox textarea{
+  position:relative; display:block; width:100%; height:clamp(84px,15svh,132px);
+  background:none; resize:none; color:transparent; caret-color:var(--foil);
+  outline:none; -webkit-appearance:none;
+}
+.sparks{position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2}
+.spark{
+  position:absolute; width:6px; height:6px; margin:-3px 0 0 -3px; border-radius:50%;
+  background:radial-gradient(circle,#fffdf4 0%,#f0d9a8 42%,rgba(240,217,168,0) 72%);
+  animation:spark 850ms var(--ease) forwards;
+}
+@keyframes spark{
+  0%  {transform:scale(.3) translate(0,0); opacity:0}
+  22% {opacity:1}
+  100%{transform:scale(0) translate(var(--dx),var(--dy)); opacity:0}
+}
+.count{font-size:10px; letter-spacing:.14em; color:var(--foil-pale); text-align:right; margin-top:5px}
+
+/* ── Αποστολή ── */
+.send{
+  display:flex; align-items:center; justify-content:center; gap:.7em;
+  width:100%; margin-top:14px; padding:14px 20px; cursor:pointer;
+  border-radius:999px; color:#fffdf6;
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(10.5px,1.85svh,13px); letter-spacing:.28em; text-transform:uppercase;
+  background:linear-gradient(178deg,#d0b483,#a2854f 60%,#8a6f42);
+  border:1px solid rgba(122,98,52,.55);
+  text-shadow:0 1px 1px rgba(96,74,42,.5);
+  box-shadow:0 1px 0 rgba(255,255,255,.34) inset, 0 10px 20px -10px rgba(110,86,50,.9);
+  transition:transform 240ms var(--ease), box-shadow 240ms var(--ease), filter 240ms var(--ease);
+  appearance:none; -webkit-appearance:none;
+}
+.send svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round}
+.send:hover{transform:translateY(-1.5px); filter:brightness(1.05);
+  box-shadow:0 1px 0 rgba(255,255,255,.34) inset, 0 15px 26px -12px rgba(110,86,50,.95)}
+.send:active{transform:translateY(0) scale(.985)}
+.send:focus-visible{outline:2px solid var(--foil-deep); outline-offset:3px}
+.send[disabled]{opacity:.55; cursor:default; transform:none}
+.err{color:#a8543f; font-size:11.5px; letter-spacing:.04em; margin-top:8px; min-height:1em}
+
+/* ═══════════════════════════════════════════════════════════════
+   6 · ΤΟ ΔΙΠΛΩΜΑ — η κάρτα μπαίνει στον φάκελο
+   ═══════════════════════════════════════════════════════════════ */
+body.sending #card{opacity:0; visibility:hidden; transition:opacity 1ms}
+.folder{
+  position:absolute; z-index:6; left:50%; top:50%;
+  width:87%; height:85%; translate:-50% -50%;
+  perspective:1500px; perspective-origin:50% 50%;
+  pointer-events:none;
+  filter:drop-shadow(0 16px 22px rgba(96,74,42,.42));
+  transition:transform 1100ms var(--ease-soft), opacity 500ms var(--ease) 900ms;
+}
+.folder.tuck{transform:translateY(29%) scale(.34) rotateX(30deg); opacity:0}
+.panel{
+  position:absolute; left:0; width:100%; height:33.3334%;
+  transform-style:preserve-3d;
+  transition:transform 640ms var(--ease-soft);
+}
+.p0{top:0;              z-index:3; transform-origin:50% 100%}
+.p1{top:33.3333%;       z-index:1}
+.p2{top:66.6667%;       z-index:2; transform-origin:50% 0%}
+.folder.f1 .p2{transform:rotateX(-180deg)}
+.folder.f2 .p0{transform:rotateX(180deg)}
+.face{
+  position:absolute; inset:0; overflow:hidden;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+}
+.face.back{
+  transform:rotateX(180deg);
+  background-color:#efe4d2;
+  background-image:url(art/card-paper.webp);
+  background-size:184% auto; background-position:center; background-repeat:repeat;
+  box-shadow:inset 0 0 40px rgba(120,96,58,.22), inset 0 0 0 1px rgba(150,120,70,.22);
+}
+.face.back::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(120,96,58,.16), rgba(120,96,58,0) 45%);
+}
+.clip{position:absolute; left:0; width:100%; height:300%}
+.p0 .clip{top:0}    .p1 .clip{top:-100%}    .p2 .clip{top:-200%}
+/* η πτυχή αφήνει σκιά στο διπλανό φύλλο */
+.crease{position:absolute; left:0; right:0; height:26%; pointer-events:none; opacity:0;
+  transition:opacity 500ms var(--ease)}
+.p1 .crease.t{top:0;    background:linear-gradient(180deg, rgba(112,88,52,.30), rgba(112,88,52,0))}
+.p1 .crease.b{bottom:0; background:linear-gradient(0deg,   rgba(112,88,52,.30), rgba(112,88,52,0))}
+.folder.f1 .p1 .crease.b{opacity:1}
+.folder.f2 .p1 .crease.t{opacity:1}
+
+/* ═══════════════════════════════════════════════════════════════
+   7 · ΛΕΖΑΝΤΑ, ΦΥΛΛΑ ΠΛΗΡΟΦΟΡΙΩΝ, ΜΗΝΥΜΑΤΑ
+   ═══════════════════════════════════════════════════════════════ */
+.caption{
+  position:absolute; z-index:5; left:0; right:0; bottom:clamp(10px,3.4svh,30px);
+  display:flex; flex-direction:column; align-items:center; gap:.7em;
+  padding:0 18px; text-align:center; pointer-events:none;
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(9.5px,1.65svh,12px); letter-spacing:.3em; text-transform:uppercase;
+  color:#6d5931;
+  text-shadow:0 1px 0 rgba(255,253,246,.95), 0 0 7px rgba(255,252,244,.95),
+              0 0 18px rgba(255,251,240,.9);
+  opacity:0; animation:capIn 1300ms var(--ease) 800ms forwards;
+  transition:opacity 500ms var(--ease);
+}
+.caption svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.1;
+  stroke-linecap:round;stroke-linejoin:round; animation:tap 2.8s var(--ease) infinite}
+@keyframes capIn{to{opacity:.94}}
+@keyframes tap{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px)}}
+body.open .caption, body.sending .caption{opacity:0; animation:none}
+body.sent .caption{animation:capIn 900ms var(--ease) 400ms forwards; pointer-events:auto}
+body.sent .caption svg{display:none}
+.again{
+  pointer-events:auto; margin-top:.2em; padding:10px 24px; cursor:pointer;
+  border-radius:999px; color:var(--foil-deep);
+  font-family:var(--serif); font-size:11px; letter-spacing:.26em; text-transform:uppercase;
+  background:rgba(255,253,247,.85); border:1px solid rgba(150,120,70,.42);
+  box-shadow:0 8px 20px -12px rgba(96,74,42,.6);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.again:hover{background:#fffdf7; border-color:rgba(150,120,70,.8)}
 .again:focus-visible{outline:2px solid var(--foil); outline-offset:3px}
+
+/* ── φύλλο πληροφοριών (πορτρέτα / ημερολόγιο) ── */
+.sheet{
+  position:fixed; inset:0; z-index:20; display:flex; align-items:flex-end; justify-content:center;
+  background:rgba(74,58,36,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  opacity:0; visibility:hidden; transition:opacity 320ms var(--ease), visibility 0s linear 320ms;
+}
+.sheet.on{opacity:1; visibility:visible; transition-delay:0s}
+.sheetBox{
+  width:min(100%, var(--fw)); max-height:88svh; overflow-y:auto;
+  padding:22px 20px calc(20px + env(safe-area-inset-bottom));
+  border-radius:24px 24px 0 0; text-align:center;
+  background-color:#f3e9d8;
+  background-image:url(art/card-paper.webp);
+  background-size:150% auto; background-position:center top; background-repeat:repeat;
+  box-shadow:0 -1px 0 rgba(255,253,246,.8) inset, 0 -24px 50px -20px rgba(70,52,30,.7);
+  transform:translateY(24px); transition:transform 380ms var(--ease);
+}
+.sheet.on .sheetBox{transform:none}
+.sheetBox h3{
+  font-family:var(--serif); font-style:italic; font-weight:400;
+  font-size:clamp(21px,3.4svh,28px); color:var(--foil-deep); margin:.1em 0 .8em;
+}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); gap:9px}
+.grid img{width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:12px;
+  box-shadow:0 0 0 1px rgba(150,120,70,.3), 0 10px 20px -12px rgba(96,74,42,.7)}
+.empty{font-size:13px; line-height:1.8; color:var(--ink-soft); padding:10px 4px}
+.sheetActs{display:flex; flex-direction:column; gap:8px; margin-top:4px}
+.sheetActs .opt{justify-content:flex-start}
+.closeRow{margin-top:14px}
+
+.toast{
+  position:fixed; left:50%; bottom:24px; z-index:30; translate:-50% 16px;
+  opacity:0; pointer-events:none; padding:11px 22px; border-radius:999px;
+  font-family:var(--serif); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:#fffdf6; background:linear-gradient(178deg,#c6ab77,#a2854f);
+  box-shadow:0 14px 28px -14px rgba(70,52,30,.9);
+  transition:opacity 300ms var(--ease), translate 300ms var(--ease);
+}
+.toast.on{opacity:1; translate:-50% 0}
 
 .sr{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important; animation-iteration-count:1!important;
-    transition-duration:120ms!important}
+    transition-duration:140ms!important}
 }
 </style>
 
-<div class="stage">
-  <div class="bleed" aria-hidden="true"></div>
-  <div class="frame">
+<div class="bleed" aria-hidden="true"></div>
 
-  <!-- ο φάκελος, κλειστός -->
-  <div class="plate closed">
-    <img src="art/envelope-closed.webp" width="1492" height="1054"
-         alt="Ο φάκελος της πρόσκλησης: περλέ κοχύλι δεμένο με κορδέλα και μαργαριτάρι" fetchpriority="high">
+<div class="frame">
 
-    <button class="pearl" id="pearl" type="button" aria-label="Ανοίξτε την πρόσκληση">
+  <!-- ═══ Ο ΦΑΚΕΛΟΣ ═══ -->
+  <div class="env" id="env">
+    <img src="art/envelope-closed.webp" width="1492" height="1054" fetchpriority="high"
+         alt="Ο φάκελος της πρόσκλησης: περλέ κοχύλι δεμένο με κορδέλα και μαργαριτάρι">
+    <button class="pearl" id="pearl" type="button" aria-label="Ανοίξτε την πρόσκληση" aria-expanded="false">
       <span class="knot" aria-hidden="true"></span>
       <span class="gleam" aria-hidden="true"></span>
       <span class="halo" aria-hidden="true"><i></i><i></i></span>
     </button>
-    <span class="flash" aria-hidden="true"></span>
   </div>
 
-  <!-- Ο φάκελος ανοιχτός.
-       ΠΡΟΣΟΧΗ: αυτή η φωτογραφία έχει τυπωμένα τα δείγματα ονομάτων του
-       style sheet (Στέφανος & Ιόλη, 28.06.2027). Χρειάζεται είτε νέο render
-       με τα αληθινά στοιχεία, είτε λευκές κάρτες ώστε να μπει από πάνω το
-       πραγματικό κείμενο. Μπαίνει εδώ προσωρινά, για να δουλέψει το άνοιγμα. -->
-  <div class="plate open" id="opened">
-    <img src="art/envelope-open.webp" width="1492" height="1054"
-         alt="Η πρόσκληση ανοιχτή: το κοχύλι, οι δύο κάρτες και η κορδέλα" loading="eager" decoding="async">
+  <!-- ═══ Η ΚΑΡΤΑ ═══ -->
+  <div class="card" id="card">
+    <div class="scroll" id="scroll">
+
+      <div class="grp">
+        <svg class="motif" viewBox="0 0 100 46" width="86" aria-hidden="true">
+          <path d="M63 7a13 13 0 1 0 12.4 16.7A10.5 10.5 0 0 1 63 7Z"/>
+          <path d="M35 3.5c.9 6.1 2.4 7.8 8.5 8.6-6.1.9-7.6 2.5-8.5 8.6-.9-6.1-2.4-7.8-8.5-8.6 6.1-.8 7.6-2.5 8.5-8.6Z"/>
+          <circle cx="19" cy="25" r="1.2"/><circle cx="48" cy="26" r="1"/>
+          <circle cx="29" cy="34" r=".8"/><circle cx="80" cy="36" r="1.1"/>
+          <circle cx="58" cy="39" r=".8"/><circle cx="69" cy="4" r=".9"/>
+        </svg>
+      </div>
+
+      <!-- 2 · αναγγελία -->
+      <div class="grp">
+        <p class="eyebrow" style="margin:0">Μαζί με τις οικογένειές μας<br>σας προσκαλούμε στον γάμο μας</p>
+      </div>
+
+      <!-- 1 · ονόματα — κουμπί πορτρέτων δίπλα σε κάθε όνομα -->
+      <div class="grp">
+        <div class="line">
+          <span class="script">Ανδρέας</span>
+          <button class="act" type="button" data-portrait="andreas" aria-label="Δείτε τα πορτρέτα του Ανδρέα">
+            <svg viewBox="0 0 24 24"><path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2.2l1.3-2h7l1.3 2h2.2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5Z"/><circle cx="11.9" cy="12.6" r="3.4"/></svg>
+          </button>
+        </div>
+        <div class="amp">&amp;</div>
+        <div class="line">
+          <span class="script">Λίνα</span>
+          <button class="act" type="button" data-portrait="lina" aria-label="Δείτε τα πορτρέτα της Λίνας">
+            <svg viewBox="0 0 24 24"><path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2.2l1.3-2h7l1.3 2h2.2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5Z"/><circle cx="11.9" cy="12.6" r="3.4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="rule"><i></i><svg viewBox="0 0 24 24"><path d="M12 3c.7 5.2 2 6.5 7.2 7.2C14 10.9 12.7 12.2 12 17.4c-.7-5.2-2-6.5-7.2-7.2C10 10.5 11.3 9.2 12 3Z"/></svg><i></i></div>
+
+      <!-- 3 · ημερομηνία — κουμπί ημερολογίου -->
+      <div class="grp">
+        <div class="lbl">Η ημέρα</div>
+        <div class="line">
+          <div class="val">Σάββατο<br>26 Σεπτεμβρίου 2026</div>
+          <button class="act" id="calBtn" type="button" aria-label="Προσθήκη στο ημερολόγιό σας">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M12 12.8v4.4M9.8 15h4.4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 + 5 · τελετή -->
+      <div class="grp">
+        <div class="lbl">Η τελετή · 18:30</div>
+        <div class="line">
+          <div class="val">Παρεκκλήσι<br>Αγίου Γεωργίου
+            <div class="sub">Κτήμα Jockey · Αχαρνές</div>
+          </div>
+          <button class="act" type="button" data-map="ceremony" aria-label="Οδηγίες προς την τελετή">
+            <svg viewBox="0 0 24 24"><path d="M12 21.2s6.3-5.9 6.3-10.3a6.3 6.3 0 1 0-12.6 0c0 4.4 6.3 10.3 6.3 10.3z"/><circle cx="12" cy="10.6" r="2.3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6 + 7 · δεξίωση -->
+      <div class="grp">
+        <div class="lbl">Η δεξίωση</div>
+        <div class="line">
+          <div class="val">Κτήμα Jockey
+            <div class="sub">Αμέσως μετά την τελετή<br>εντός του κτήματος</div>
+          </div>
+          <button class="act" type="button" data-map="reception" aria-label="Οδηγίες προς τη δεξίωση">
+            <svg viewBox="0 0 24 24"><path d="M12 21.2s6.3-5.9 6.3-10.3a6.3 6.3 0 1 0-12.6 0c0 4.4 6.3 10.3 6.3 10.3z"/><circle cx="12" cy="10.6" r="2.3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="rule"><i></i><svg viewBox="0 0 24 24"><path d="M12 3c.7 5.2 2 6.5 7.2 7.2C14 10.9 12.7 12.2 12 17.4c-.7-5.2-2-6.5-7.2-7.2C10 10.5 11.3 9.2 12 3Z"/></svg><i></i></div>
+
+      <!-- 8 · οικογένειες -->
+      <div class="grp">
+        <div class="lbl">Οι οικογένειες</div>
+        <div class="sub" style="letter-spacing:.14em">Παύλου Σταμελάκη &amp; Ευαγγελίας Μάμαλη</div>
+        <div class="sub" style="letter-spacing:.14em">Γεωργίου Ασμενούδη &amp; Καλλιόπης Τριανταφύλλου</div>
+      </div>
+
+      <!-- 9 · κουμπάροι -->
+      <div class="grp">
+        <div class="lbl">Οι κουμπάροι</div>
+        <div class="sub" style="letter-spacing:.14em">Διονύσιος Αρβανίτης</div>
+        <div class="sub" style="letter-spacing:.14em">Ευαγγελία Παπαγιαννοπούλου</div>
+      </div>
+
+      <div class="rule"><i></i><svg viewBox="0 0 24 24"><path d="M12 3c.7 5.2 2 6.5 7.2 7.2C14 10.9 12.7 12.2 12 17.4c-.7-5.2-2-6.5-7.2-7.2C10 10.5 11.3 9.2 12 3Z"/></svg><i></i></div>
+
+      <!-- 14 · μονόγραμμα & φράση -->
+      <div class="grp">
+        <div class="script" style="font-size:clamp(24px,4.2svh,34px)">Α <span class="amp" style="font-size:.6em">&amp;</span> Λ</div>
+        <p class="quote" style="margin:.5em 0 0">«Άξιζε να υπάρξουμε<br>για να συναντηθούμε…»</p>
+        <div class="lbl" style="margin:.9em 0 0">Γιάννης Ρίτσος</div>
+      </div>
+
+      <!-- 12 · διαμονή -->
+      <div class="grp">
+        <div class="lbl">Διαμονή</div>
+        <div class="line">
+          <div class="sub">Αχαρνές · Βαρυμπόμπη · Κηφισιά<br>10–20 λεπτά από το κτήμα</div>
+          <button class="act" type="button" data-map="stay" aria-label="Καταλύματα κοντά στο κτήμα">
+            <svg viewBox="0 0 24 24"><path d="M3.5 20.5V9.8L12 3.6l8.5 6.2v10.7"/><path d="M9.2 20.5v-6h5.6v6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 13 · δώρο -->
+      <div class="grp">
+        <div class="lbl">Προαιρετική λίστα γάμου</div>
+        <div class="line">
+          <div class="val" style="font-size:clamp(10px,1.7svh,12px); letter-spacing:.1em; text-transform:none">
+            GR87 0171 3190<br>0063 1917 1595 281
+            <div class="sub" style="font-size:11px">Τράπεζα Πειραιώς<br>Σταμελάκης Ανδρέας · Ασμενούδη Πασχαλία</div>
+          </div>
+          <button class="act" id="ibanBtn" type="button" aria-label="Αντιγραφή IBAN">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="1.8"/><path d="M5 15V5.8A1.8 1.8 0 0 1 6.8 4H15"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 11 · τηλέφωνα -->
+      <div class="grp">
+        <div class="lbl">Επικοινωνία</div>
+        <div id="phones"></div>
+      </div>
+
+      <div class="rule"><i></i><svg viewBox="0 0 24 24"><path d="M12 3c.7 5.2 2 6.5 7.2 7.2C14 10.9 12.7 12.2 12 17.4c-.7-5.2-2-6.5-7.2-7.2C10 10.5 11.3 9.2 12 3Z"/></svg><i></i></div>
+
+      <!-- 10 · RSVP — τρία κουμπιά -->
+      <div class="grp">
+        <div class="lbl">Επιβεβαίωση παρουσίας</div>
+        <div class="sub" style="margin-bottom:.9em">Παρακαλούμε απαντήστε έως τις 31 Αυγούστου 2026</div>
+        <div class="rsvp" id="rsvp" role="group" aria-label="Επιβεβαίωση παρουσίας">
+          <button class="opt" type="button" data-rsvp="all" aria-pressed="false">
+            <svg viewBox="0 0 24 24"><path d="M20 6.5 9.4 17.1 4 11.7"/></svg>
+            <span>Θα είμαι εκεί</span>
+          </button>
+          <button class="opt" type="button" data-rsvp="church" aria-pressed="false">
+            <svg viewBox="0 0 24 24"><path d="M12 2.6v4M10.1 4.4h3.8"/><path d="M5 21V11.4L12 6.6l7 4.8V21"/><path d="M9.8 21v-5.2h4.4V21"/></svg>
+            <span>Μόνο στην εκκλησία</span>
+          </button>
+          <button class="opt" type="button" data-rsvp="no" aria-pressed="false">
+            <svg viewBox="0 0 24 24"><path d="M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6"/></svg>
+            <span>Δεν θα μπορέσω</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 15 · η ευχή -->
+      <div class="grp">
+        <div class="lbl">Η ευχή σας</div>
+        <div class="wishBox">
+          <div class="mirror" id="mirror" aria-hidden="true"></div>
+          <textarea id="wish" maxlength="600" spellcheck="false"
+                    aria-label="Γράψτε την ευχή σας"></textarea>
+          <div class="sparks" id="sparks" aria-hidden="true"></div>
+        </div>
+        <div class="count" id="count" aria-hidden="true"></div>
+
+        <!-- 16 · αποστολή -->
+        <button class="send" id="send" type="button">
+          <svg viewBox="0 0 24 24"><path d="M21.4 2.6 11 13"/><path d="M21.4 2.6 14.8 21.4l-3.9-8.3-8.3-3.9z"/></svg>
+          <span id="sendLbl">Αποστολή</span>
+        </button>
+        <div class="err" id="err" role="alert"></div>
+      </div>
+
+    </div>
   </div>
 
-  </div><!-- /.frame -->
-
-  <p class="hint" id="hint">
+  <!-- λεζάντα / μήνυμα -->
+  <div class="caption" id="caption">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V6a2 2 0 0 1 4 0v5m0-2a2 2 0 0 1 4 0v3m0-1a2 2 0 0 1 4 0v4a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.5L6 16"/></svg>
-    Αγγίξτε το μαργαριτάρι
-  </p>
-
-  <button class="again" id="again" type="button">Ξανά</button>
+    <span id="capText">Αγγίξτε το μαργαριτάρι</span>
+  </div>
 </div>
+
+<!-- φύλλο: πορτρέτα -->
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheetBox">
+    <h3 id="sheetTitle">—</h3>
+    <div class="grid" id="sheetGrid"></div>
+    <div class="empty" id="sheetEmpty" hidden></div>
+    <div class="sheetActs" id="sheetActs"></div>
+    <div class="closeRow"><button class="again" id="sheetClose" type="button">Κλείσιμο</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
-  var pearl = document.getElementById('pearl'),
-      again = document.getElementById('again'),
-      body  = document.body;
+"use strict";
 
-  function open(){
-    if(body.classList.contains('opening')) return;
-    body.classList.add('opening');
-    pearl.setAttribute('aria-expanded','true');
-    pearl.disabled = true;
-    setTimeout(function(){ again.focus({preventScroll:true}); }, 2200);
-  }
-  function close(){
-    body.classList.remove('opening');
-    pearl.setAttribute('aria-expanded','false');
-    pearl.disabled = false;
-    pearl.focus({preventScroll:true});
-  }
+/* ═══════════════════════════════════════════════════════════════
+   ΡΥΘΜΙΣΕΙΣ — τα στοιχεία που αλλάζουν, σε ένα σημείο
+   ═══════════════════════════════════════════════════════════════ */
+var CFG = {
+  /* πορτρέτα — βάλτε αρχεία στο celestial/photos/ και τα URL εδώ */
+  portraits: {
+    andreas: { name:"Ανδρέας", photos: [] },
+    lina:    { name:"Λίνα",    photos: [] }
+  },
+  maps: {
+    ceremony:  "Παρεκκλήσι Αγίου Γεωργίου, Κτήμα Jockey, Λεωφ. Τατοΐου, Αχαρνές",
+    reception: "Κτήμα Jockey, Λεωφ. Τατοΐου, Αχαρνές",
+    stay:      "ξενοδοχεία κοντά σε Κτήμα Jockey Αχαρνές"
+  },
+  phones: [
+    { who:"Λίνα",    label:"Λίνα",    tel:"+306985569739", pretty:"6985 569 739" },
+    { who:"Ανδρέας", label:"Ανδρέας", tel:"+306977355378", pretty:"6977 355 378" }
+  ],
+  iban: "GR8701713190006319171595281",
+  event: {
+    title:    "Γάμος — Ανδρέας & Λίνα",
+    startUTC: "20260926T153000Z",          /* 26.09.2026 18:30 Αθήνα (EEST) */
+    endUTC:   "20260926T230000Z",
+    location: "Παρεκκλήσι Αγίου Γεωργίου, Κτήμα Jockey, Λεωφ. Τατοΐου, Αχαρνές",
+    notes:    "Η τελετή στις 18:30 και η δεξίωση αμέσως μετά, εντός του κτήματος."
+  },
+  /* endpoint κενό → ανοίγει η εφαρμογή email του καλεσμένου (mailto) */
+  rsvp: { endpoint:"", email:"andrewstamelakis@gmail.com",
+          subject:"RSVP — Πρόσκληση γάμου Ανδρέας & Λίνα" }
+};
 
-  pearl.setAttribute('aria-expanded','false');
-  pearl.addEventListener('click', open);
-  again.addEventListener('click', close);
+var LABEL = { all:"Θα είμαι εκεί", church:"Μόνο στην εκκλησία", no:"Δεν θα μπορέσω" };
+
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+var body = document.body;
+
+/* ── βοηθητικά ── */
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+var toastEl = $("#toast"), toastT;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add("on");
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.classList.remove("on"); }, 2300);
+}
+function copy(text){
+  if(navigator.clipboard && navigator.clipboard.writeText)
+    return navigator.clipboard.writeText(text).catch(fallback);
+  return Promise.resolve(fallback());
+  function fallback(){
+    var t = document.createElement("textarea");
+    t.value = text; t.setAttribute("readonly","");
+    t.style.cssText = "position:fixed;top:-999px;opacity:0";
+    document.body.appendChild(t); t.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(t);
+  }
+}
+function flash(btn, label){
+  var old = btn.innerHTML;
+  btn.classList.add("done");
+  btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6.5 9.4 17.1 4 11.7"/></svg>';
+  if(label) toast(label);
+  setTimeout(function(){ btn.classList.remove("done"); btn.innerHTML = old; }, 2000);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ΣΚΗΝΗ 1 → 2
+   ═══════════════════════════════════════════════════════════════ */
+var pearl = $("#pearl"), scroll = $("#scroll"), capText = $("#capText");
+pearl.addEventListener("click", function(){
+  body.classList.remove("sent");
+  body.classList.add("open");
+  pearl.setAttribute("aria-expanded","true");
+  scroll.scrollTop = 0;
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   1 · ΠΟΡΤΡΕΤΑ  — κουμπί δίπλα σε κάθε όνομα
+   ═══════════════════════════════════════════════════════════════ */
+var sheet = $("#sheet"), sheetGrid = $("#sheetGrid"), sheetEmpty = $("#sheetEmpty"),
+    sheetActs = $("#sheetActs"), lastFocus = null;
+
+function openSheet(title, build){
+  $("#sheetTitle").textContent = title;
+  sheetGrid.innerHTML = ""; sheetActs.innerHTML = "";
+  sheetEmpty.hidden = true; sheetEmpty.textContent = "";
+  build();
+  lastFocus = document.activeElement;
+  sheet.classList.add("on");
+  $("#sheetClose").focus();
+}
+function closeSheet(){
+  sheet.classList.remove("on");
+  if(lastFocus) lastFocus.focus();
+}
+$("#sheetClose").addEventListener("click", closeSheet);
+sheet.addEventListener("click", function(e){ if(e.target === sheet) closeSheet(); });
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape" && sheet.classList.contains("on")) closeSheet();
+});
+
+$$("[data-portrait]").forEach(function(b){
+  b.addEventListener("click", function(){
+    var p = CFG.portraits[b.getAttribute("data-portrait")];
+    openSheet(p.name, function(){
+      if(p.photos.length){
+        p.photos.forEach(function(src, i){
+          var img = document.createElement("img");
+          img.src = src; img.loading = "lazy";
+          img.alt = p.name + " — πορτρέτο " + (i+1);
+          sheetGrid.appendChild(img);
+        });
+      }else{
+        sheetEmpty.hidden = false;
+        sheetEmpty.textContent = "Τα πορτρέτα προστίθενται σύντομα.";
+      }
+    });
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   3 · ΗΜΕΡΟΛΟΓΙΟ — προσθήκη με ειδοποίηση
+   ═══════════════════════════════════════════════════════════════ */
+function icsText(){
+  var e = CFG.event;
+  var lines = [
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Andreas kai Lina//Gamos//EL","CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    "UID:andreas-lina-26092026@invitation",
+    "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,""),
+    "DTSTART:" + e.startUTC,
+    "DTEND:"   + e.endUTC,
+    "SUMMARY:" + e.title,
+    "LOCATION:" + e.location.replace(/,/g,"\\,"),
+    "DESCRIPTION:" + e.notes.replace(/,/g,"\\,"),
+    "BEGIN:VALARM","TRIGGER:-P1D","ACTION:DISPLAY",
+    "DESCRIPTION:Αύριο ο γάμος του Ανδρέα και της Λίνας","END:VALARM",
+    "BEGIN:VALARM","TRIGGER:-PT3H","ACTION:DISPLAY",
+    "DESCRIPTION:Σε 3 ώρες η τελετή","END:VALARM",
+    "END:VEVENT","END:VCALENDAR"
+  ];
+  /* αναδίπλωση στα 72 octets, όπως ορίζει το RFC 5545 */
+  var out = [];
+  lines.forEach(function(l){
+    var b = new TextEncoder().encode(l), i = 0;
+    while(b.length - i > 72){
+      var cut = 72;
+      while(cut > 1 && (b[i+cut] & 0xC0) === 0x80) cut--;   /* μη σπάμε χαρακτήρα UTF-8 */
+      out.push((i ? " " : "") + new TextDecoder().decode(b.slice(i, i+cut)));
+      i += cut;
+    }
+    out.push((i ? " " : "") + new TextDecoder().decode(b.slice(i)));
+  });
+  return out.join("\r\n") + "\r\n";
+}
+function googleCalUrl(){
+  var e = CFG.event;
+  return "https://calendar.google.com/calendar/render?" + new URLSearchParams({
+    action:"TEMPLATE", text:e.title,
+    dates:e.startUTC + "/" + e.endUTC,
+    location:e.location, details:e.notes
+  }).toString();
+}
+$("#calBtn").addEventListener("click", function(){
+  openSheet("Στο ημερολόγιό σας", function(){
+    sheetEmpty.hidden = false;
+    sheetEmpty.textContent = "Σάββατο 26 Σεπτεμβρίου 2026, 18:30 — με υπενθύμιση την προηγούμενη μέρα.";
+    var ics = document.createElement("a");
+    ics.className = "opt"; ics.setAttribute("role","button");
+    ics.href = URL.createObjectURL(new Blob([icsText()], {type:"text/calendar;charset=utf-8"}));
+    ics.download = "Gamos-Andreas-Lina.ics";
+    ics.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/>' +
+                    '<path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Apple · Outlook · άλλο</span>';
+    ics.style.textDecoration = "none";
+    var g = document.createElement("a");
+    g.className = "opt"; g.setAttribute("role","button");
+    g.href = googleCalUrl(); g.target = "_blank"; g.rel = "noopener";
+    g.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/>' +
+                  '<path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Google Ημερολόγιο</span>';
+    g.style.textDecoration = "none";
+    sheetActs.appendChild(ics); sheetActs.appendChild(g);
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   5 · 6 · 12 · ΧΑΡΤΕΣ ΤΟΥ ΚΙΝΗΤΟΥ
+   ═══════════════════════════════════════════════════════════════ */
+function isApple(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+function mapsUrl(q){
+  return isApple() ? "https://maps.apple.com/?q=" + encodeURIComponent(q)
+                   : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+}
+$$("[data-map]").forEach(function(b){
+  b.addEventListener("click", function(){
+    window.open(mapsUrl(CFG.maps[b.getAttribute("data-map")]), "_blank", "noopener");
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   11 · 13 · ΤΗΛΕΦΩΝΑ ΚΑΙ IBAN
+   ═══════════════════════════════════════════════════════════════ */
+$("#ibanBtn").addEventListener("click", function(){
+  var b = this;
+  copy(CFG.iban).then(function(){ flash(b, "Το IBAN αντιγράφηκε"); });
+});
+
+var phWrap = $("#phones");
+CFG.phones.forEach(function(p){
+  var row = document.createElement("div");
+  row.className = "line two";
+  row.style.marginTop = "8px";
+  row.innerHTML =
+    '<div class="val" style="font-size:clamp(10px,1.7svh,12.5px);letter-spacing:.14em">' +
+      esc(p.label) + '<div class="sub" style="font-size:12px;letter-spacing:.1em">' + esc(p.pretty) + '</div></div>';
+  var call = document.createElement("a");
+  call.className = "act sm"; call.href = "tel:" + p.tel;
+  call.setAttribute("aria-label", "Καλέστε " + p.who);
+  call.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4.2 5.2c0 7.8 6.8 14.6 14.6 14.6l0-3.9-3.9-1-1.9 1.9c-2.9-1.5-6.3-4.9-7.8-7.8l1.9-1.9-1-3.9z"/></svg>';
+  var cp = document.createElement("button");
+  cp.className = "act sm"; cp.type = "button";
+  cp.setAttribute("aria-label", "Αντιγραφή του αριθμού — " + p.who);
+  cp.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="1.8"/><path d="M5 15V5.8A1.8 1.8 0 0 1 6.8 4H15"/></svg>';
+  cp.addEventListener("click", function(){
+    copy(p.pretty.replace(/\s/g,"")).then(function(){ flash(cp, "Ο αριθμός αντιγράφηκε"); });
+  });
+  row.appendChild(call); row.appendChild(cp);
+  phWrap.appendChild(row);
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   10 · RSVP — τρία κουμπιά
+   ═══════════════════════════════════════════════════════════════ */
+var choice = null, errEl = $("#err");
+$$("#rsvp .opt").forEach(function(b){
+  b.addEventListener("click", function(){
+    choice = b.getAttribute("data-rsvp");
+    $$("#rsvp .opt").forEach(function(o){
+      o.setAttribute("aria-pressed", String(o === b));
+    });
+    errEl.textContent = "";
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   15 · Η ΕΥΧΗ — λάμψη πάνω στα γράμματα καθώς γράφουν
+   ═══════════════════════════════════════════════════════════════ */
+var wish = $("#wish"), mirror = $("#mirror"), sparks = $("#sparks"), count = $("#count");
+var GLOW = 10;
+
+function paint(){
+  var v = wish.value;
+  if(!v){
+    mirror.innerHTML = '<span class="ph">Γράψτε μας δυο λόγια — θα τα κρατήσουμε…</span>';
+    count.textContent = "";
+    return;
+  }
+  var cut = Math.max(0, v.length - GLOW);
+  var out = esc(v.slice(0, cut));
+  var tail = v.slice(cut);
+  for(var i = 0; i < tail.length; i++){
+    var t = (i + 1) / tail.length;                       /* 1 = το πιο πρόσφατο */
+    var a  = (0.08 + t * 0.85).toFixed(2);
+    var r1 = (2 + t * 10).toFixed(1), r2 = (1 + t * 4).toFixed(1);
+    out += '<b style="text-shadow:0 0 ' + r1 + 'px rgba(255,232,178,' + a + '),' +
+           '0 0 ' + r2 + 'px rgba(255,251,236,' + (a * 0.85).toFixed(2) + ');' +
+           'color:rgb(' + Math.round(109 + t*44) + ',' + Math.round(91 + t*32) + ',' +
+           Math.round(62 + t*8) + ')">' + esc(tail[i]) + '</b>';
+  }
+  mirror.innerHTML = out + "​";
+  mirror.scrollTop = wish.scrollTop;
+  count.textContent = v.length + " / 600";
+}
+function sparkle(){
+  var bs = mirror.getElementsByTagName("b");
+  if(!bs.length) return;
+  var last = bs[bs.length - 1];
+  var r = last.getBoundingClientRect(), box = sparks.getBoundingClientRect();
+  if(!r.width && !r.height) return;
+  var x = r.right - box.left, y = r.top - box.top + r.height / 2;
+  if(x < 0 || y < 0 || x > box.width || y > box.height) return;
+  if(sparks.childElementCount > 14) return;        /* όριο, για ομαλή κίνηση */
+  for(var i = 0; i < 2; i++){
+    var s = document.createElement("i");
+    s.className = "spark";
+    s.style.left = x.toFixed(1) + "px";
+    s.style.top  = y.toFixed(1) + "px";
+    s.style.setProperty("--dx", (Math.random()*24 - 12).toFixed(1) + "px");
+    s.style.setProperty("--dy", (-7 - Math.random()*16).toFixed(1) + "px");
+    sparks.appendChild(s);
+    (function(el){ setTimeout(function(){ el.remove(); }, 880); })(s);
+  }
+}
+var lastLen = 0;
+wish.addEventListener("input", function(){
+  paint();
+  if(wish.value.length > lastLen) sparkle();          /* λάμψη μόνο όταν γράφουν */
+  lastLen = wish.value.length;
+});
+wish.addEventListener("scroll", function(){ mirror.scrollTop = wish.scrollTop; });
+paint();
+
+/* ═══════════════════════════════════════════════════════════════
+   16 · ΑΠΟΣΤΟΛΗ — η κάρτα διπλώνει και μπαίνει στον φάκελο
+   ═══════════════════════════════════════════════════════════════ */
+var card = $("#card"), sendBtn = $("#send"), sendLbl = $("#sendLbl"),
+    frame = document.querySelector(".frame"), caption = $("#caption");
+
+function payload(){
+  return {
+    rsvp: LABEL[choice] || "—",
+    wish: wish.value.trim()
+  };
+}
+function asText(d){
+  return ["Απάντηση πρόσκλησης — Ανδρέας & Λίνα, 26.09.2026","",
+          "Παρουσία: " + d.rsvp, "", "Ευχή:", d.wish || "—"].join("\n");
+}
+function deliver(d){
+  if(CFG.rsvp.endpoint){
+    return fetch(CFG.rsvp.endpoint, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body: JSON.stringify({ _subject: CFG.rsvp.subject, Parousia: d.rsvp, Euchi: d.wish || "—" })
+    }).then(function(r){ if(!r.ok) throw new Error("http " + r.status); })
+      .catch(function(){ mailto(d); });
+  }
+  mailto(d);
+  return Promise.resolve();
+}
+function mailto(d){
+  window.location.href = "mailto:" + CFG.rsvp.email +
+    "?subject=" + encodeURIComponent(CFG.rsvp.subject) +
+    "&body="    + encodeURIComponent(asText(d));
+}
+
+sendBtn.addEventListener("click", function(){
+  if(!choice){
+    errEl.textContent = "Διαλέξτε πρώτα αν θα είστε μαζί μας.";
+    $("#rsvp").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+  errEl.textContent = "";
+  sendBtn.disabled = true; sendLbl.textContent = "Αποστολή…";
+  var d = payload();
+  deliver(d);
+  scroll.scrollTo({top:0, behavior:"smooth"});
+  setTimeout(function(){ fold(d); }, 520);
+});
+
+function fold(d){
+  body.classList.add("sending");
+
+  var folder = document.createElement("div");
+  folder.className = "folder";
+  ["p0","p1","p2"].forEach(function(cls){
+    var panel = document.createElement("div");
+    panel.className = "panel " + cls;
+
+    var front = document.createElement("div"); front.className = "face front";
+    var clip  = document.createElement("div"); clip.className  = "clip";
+    var clone = card.cloneNode(true);
+    clone.removeAttribute("id");
+    clone.style.cssText = "position:absolute;left:0;top:0;width:100%;height:100%;" +
+      "transform:none;opacity:1;visibility:visible;transition:none;box-shadow:none";
+    var cs = clone.querySelector(".scroll");
+    if(cs){ cs.scrollTop = 0; cs.style.overflow = "hidden"; }
+    clip.appendChild(clone); front.appendChild(clip);
+
+    var back = document.createElement("div"); back.className = "face back";
+
+    panel.appendChild(front); panel.appendChild(back);
+    if(cls === "p1"){
+      var ct = document.createElement("div"); ct.className = "crease t";
+      var cb = document.createElement("div"); cb.className = "crease b";
+      panel.appendChild(ct); panel.appendChild(cb);
+    }
+    folder.appendChild(panel);
+  });
+  frame.appendChild(folder);
+
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){ folder.classList.add("f1"); });
+  });
+  setTimeout(function(){ folder.classList.add("f2");   }, 560);
+  setTimeout(function(){ folder.classList.add("tuck"); }, 1180);
+  setTimeout(function(){
+    folder.remove();
+    body.classList.remove("open","sending");
+    body.classList.add("sent");
+    pearl.setAttribute("aria-expanded","false");
+    sendBtn.disabled = false; sendLbl.textContent = "Αποστολή";
+    capText.textContent = d.rsvp === LABEL.no
+      ? "Θα μας λείψετε — ευχαριστούμε για την απάντηση"
+      : "Η ευχή σας ταξίδεψε · σας περιμένουμε";
+    if(!$("#again")){
+      var again = document.createElement("button");
+      again.className = "again"; again.id = "again"; again.type = "button";
+      again.textContent = "Δείτε ξανά την πρόσκληση";
+      again.addEventListener("click", function(){ pearl.click(); });
+      caption.appendChild(again);
+    }
+  }, 2380);
+}
 })();
 </script>
