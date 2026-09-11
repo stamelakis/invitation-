@@ -557,8 +557,8 @@ body.shutting .sleeve{opacity:1}
    7 · ΛΕΖΑΝΤΑ, ΦΥΛΛΑ ΠΛΗΡΟΦΟΡΙΩΝ, ΜΗΝΥΜΑΤΑ
    ═══════════════════════════════════════════════════════════════ */
 .caption{
-  position:absolute; z-index:5; left:0; right:0; bottom:clamp(10px,3.4svh,30px);
-  display:flex; flex-direction:column; align-items:center; gap:.7em;
+  position:absolute; z-index:5; left:0; right:0; bottom:clamp(8px,2.2svh,20px);
+  display:flex; flex-direction:column; align-items:center; gap:.5em;
   padding:0 18px; text-align:center; pointer-events:none;
   font-family:var(--serif); font-weight:500;
   font-size:clamp(9.5px,1.65svh,12px); letter-spacing:.3em; text-transform:uppercase;
@@ -574,9 +574,9 @@ body.shutting .sleeve{opacity:1}
 @keyframes tap{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px)}}
 body.open .caption, body.sending .caption{opacity:0; animation:none}
 body.sent .caption{animation:capIn 900ms var(--ease) 400ms forwards; pointer-events:auto}
-body.sent .caption svg{display:none}
+body.sent .caption > svg{display:none}   /* μόνο το χεράκι, όχι τα εικονίδια των κουμπιών */
 .again{
-  pointer-events:auto; margin-top:.2em; padding:10px 24px; cursor:pointer;
+  pointer-events:auto; margin-top:.1em; padding:9px 22px; cursor:pointer;
   border-radius:999px; color:var(--foil-deep);
   font-family:var(--serif); font-size:11px; letter-spacing:.26em; text-transform:uppercase;
   background:rgba(255,253,247,.85); border:1px solid rgba(150,120,70,.42);
@@ -585,6 +585,33 @@ body.sent .caption svg{display:none}
 }
 .again:hover{background:#fffdf7; border-color:rgba(150,120,70,.8)}
 .again:focus-visible{outline:2px solid var(--foil); outline-offset:3px}
+
+/* το κουμπί του τελικού σκηνικού: το ίδιο τούλι με την «Αποστολή» */
+.post{
+  pointer-events:auto; margin-top:.1em; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:.6em;
+  padding:10px 24px; border-radius:999px; color:#654e1e;
+  font-family:var(--serif); font-weight:600;
+  font-size:clamp(10px,1.7svh,12px); letter-spacing:.24em; text-transform:uppercase;
+  background-color:#f6efe2;
+  background-image:linear-gradient(180deg, rgba(255,253,247,.50), rgba(255,249,236,.24) 46%,
+                                            rgba(255,250,238,.46)),
+                   url(art/bow-tulle.webp);
+  background-size:auto, cover; background-position:center, center 42%;
+  border:1px solid rgba(150,120,70,.48);
+  text-shadow:var(--deboss);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+             inset 0 -1px 0 rgba(150,120,70,.16),
+             0 9px 20px -11px rgba(100,78,44,.8);
+  transition:transform 240ms var(--ease), box-shadow 240ms var(--ease);
+  appearance:none; -webkit-appearance:none;
+}
+.post svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round}
+.post:hover{transform:translateY(-1.5px); box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+            inset 0 -1px 0 rgba(150,120,70,.16), 0 13px 24px -12px rgba(100,78,44,.85)}
+.post:active{transform:translateY(0) scale(.985)}
+.post:focus-visible{outline:2px solid var(--foil-deep); outline-offset:3px}
 
 /* ── φύλλο πληροφοριών (πορτρέτα / ημερολόγιο) ── */
 .sheet{
@@ -1207,6 +1234,14 @@ function asText(d){
   return ["Απάντηση πρόσκλησης — Ανδρέας & Λίνα, 26.09.2026","",
           "Παρουσία: " + d.rsvp, "", "Ευχή:", d.wish || "—"].join("\n");
 }
+/* Η απάντηση που περιμένει να φύγει με email, αν δεν υπάρχει endpoint.
+   ΓΙΑΤΙ: το mailto: βγάζει αμέσως μπροστά την εφαρμογή αλληλογραφίας του
+   κινητού. Αν φύγει τη στιγμή του πατήματος, το κλείσιμο του φακέλου παίζει
+   πίσω από αυτήν και δεν το βλέπει κανείς. Οπότε πρώτα η κίνηση, και το
+   email ανοίγει στο τέλος — με δικό του πάτημα, που είναι και ο μόνος
+   τρόπος να μην το μπλοκάρει το κινητό. */
+var pendingMail = null;
+
 function deliver(d){
   if(CFG.rsvp.endpoint){
     return fetch(CFG.rsvp.endpoint, {
@@ -1214,11 +1249,30 @@ function deliver(d){
       headers:{"Content-Type":"application/json","Accept":"application/json"},
       body: JSON.stringify({ _subject: CFG.rsvp.subject, Parousia: d.rsvp, Euchi: d.wish || "—" })
     }).then(function(r){ if(!r.ok) throw new Error("http " + r.status); })
-      .catch(function(){ mailto(d); });
+      .catch(function(){ pendingMail = d; markPending(); });
   }
-  mailto(d);
+  pendingMail = d;
   return Promise.resolve();
 }
+/* το κουμπί του τελικού σκηνικού — φαίνεται μόνο όταν η απάντηση
+   περιμένει να φύγει με email */
+function markPending(){
+  var btn = $("#mailNow");
+  if(!pendingMail){ if(btn) btn.remove(); return; }
+  if(!btn){
+    btn = document.createElement("button");
+    btn.className = "post"; btn.id = "mailNow"; btn.type = "button";
+    btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+      '<rect x="3" y="5.5" width="18" height="13" rx="2.2"/><path d="m3.6 6.8 8.4 6 8.4-6"/>' +
+      '</svg><span>Στείλτε την απάντηση</span>';
+    btn.addEventListener("click", function(){
+      var d = pendingMail;
+      if(d) mailto(d);                  /* με δικό του πάτημα: δεν μπλοκάρεται */
+    });
+    caption.insertBefore(btn, $("#again") || null);
+  }
+}
+
 function mailto(d){
   window.location.href = "mailto:" + CFG.rsvp.email +
     "?subject=" + encodeURIComponent(CFG.rsvp.subject) +
@@ -1234,7 +1288,7 @@ sendBtn.addEventListener("click", function(){
   errEl.textContent = "";
   sendBtn.disabled = true; sendLbl.textContent = "Αποστολή…";
   var d = payload();
-  deliver(d);
+  deliver(d);                           /* με endpoint φεύγει τώρα· αλλιώς περιμένει */
   scroll.scrollTo({top:0, behavior:"smooth"});
   setTimeout(function(){ fold(d); }, 420);
 });
@@ -1287,9 +1341,11 @@ function fold(d){
     body.classList.add("sent");
     pearl.setAttribute("aria-expanded","false");
     sendBtn.disabled = false; sendLbl.textContent = "Αποστολή";
-    capText.textContent = d.rsvp === LABEL.no
-      ? "Θα μας λείψετε — ευχαριστούμε για την απάντηση"
-      : "Η ευχή σας ταξίδεψε · σας περιμένουμε";
+    capText.textContent = pendingMail
+      ? "Ο φάκελος έκλεισε"
+      : (d.rsvp === LABEL.no
+          ? "Θα μας λείψετε — ευχαριστούμε για την απάντηση"
+          : "Η ευχή σας ταξίδεψε · σας περιμένουμε");
     if(!$("#again")){
       var again = document.createElement("button");
       again.className = "again"; again.id = "again"; again.type = "button";
@@ -1297,6 +1353,7 @@ function fold(d){
       again.addEventListener("click", function(){ pearl.click(); });
       caption.appendChild(again);
     }
+    markPending();
   }, 4700);
 }
 })();
