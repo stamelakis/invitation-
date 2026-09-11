@@ -930,10 +930,20 @@ var CFG = {
     notes:    "Η τελετή στις 18:30 και η δεξίωση αμέσως μετά, εντός του κτήματος."
   },
   /* endpoint κενό → ανοίγει η εφαρμογή email του καλεσμένου (mailto) */
+  /* ───── Πού φτάνει η απάντηση ─────────────────────────────────────
+     endpoint : ο «ταχυδρόμος» που στέλνει το email στο ζευγάρι. Όσο είναι
+                κενός, η απάντηση δεν φεύγει μόνη της: το τελικό σκηνικό
+                δείχνει κουμπί που ανοίγει την εφαρμογή email του καλεσμένου.
+                Μόλις μπει, η αποστολή γίνεται σιωπηλά με ΕΝΑ πάτημα, όσο
+                παίζει το κλείσιμο του φακέλου.
+     email    : η διεύθυνση του ζευγαριού — για το κουμπί επικοινωνίας και
+                για την εφεδρική διαδρομή. Δεν στέλνεται πουθενά αλλού.
+     ─────────────────────────────────────────────────────────────────── */
   rsvp: { endpoint:"", email:"andrewstamelakis@gmail.com",
           subject:"RSVP — Πρόσκληση γάμου Ανδρέας & Λίνα" }
 };
 
+var lastReply = null;
 var LABEL = { all:"Θα είμαι εκεί", church:"Μόνο στην εκκλησία", no:"Δεν θα μπορέσω" };
 
 var $ = function(s){ return document.querySelector(s); };
@@ -1241,18 +1251,43 @@ function asText(d){
    email ανοίγει στο τέλος — με δικό του πάτημα, που είναι και ο μόνος
    τρόπος να μην το μπλοκάρει το κινητό. */
 var pendingMail = null;
+var sendState = "idle";        /* idle | sending | sent | failed */
 
 function deliver(d){
   if(CFG.rsvp.endpoint){
+    sendState = "sending"; pendingMail = null;
     return fetch(CFG.rsvp.endpoint, {
       method:"POST",
       headers:{"Content-Type":"application/json","Accept":"application/json"},
-      body: JSON.stringify({ _subject: CFG.rsvp.subject, Parousia: d.rsvp, Euchi: d.wish || "—" })
-    }).then(function(r){ if(!r.ok) throw new Error("http " + r.status); })
-      .catch(function(){ pendingMail = d; markPending(); });
+      body: JSON.stringify({
+        _subject: CFG.rsvp.subject,
+        Parousia: d.rsvp,
+        Euchi:    d.wish || "—"
+      })
+    }).then(function(r){
+      if(!r.ok) throw new Error("http " + r.status);
+      sendState = "sent";
+    }).catch(function(){
+      /* δεν έφυγε: κρατάμε την απάντηση για την εφεδρική διαδρομή */
+      sendState = "failed"; pendingMail = d;
+    }).then(function(){ paintOutcome(); });
   }
-  pendingMail = d;
+  sendState = "idle"; pendingMail = d;
   return Promise.resolve();
+}
+
+/* Το τελικό σκηνικό δείχνει τι πραγματικά συνέβη. Το γράφουμε και στο τέλος
+   της κίνησης και ξανά μόλις απαντήσει ο διακομιστής, όποιο έρθει δεύτερο. */
+function paintOutcome(){
+  if(!body.classList.contains("sent")) return;
+  capText.textContent =
+      sendState === "sent"   ? (lastReply && lastReply.rsvp === LABEL.no
+                                  ? "Θα μας λείψετε — ευχαριστούμε για την απάντηση"
+                                  : "Η ευχή σας ταξίδεψε · σας περιμένουμε")
+    : sendState === "sending" ? "Ο φάκελος έκλεισε · η απάντηση ταξιδεύει"
+    : sendState === "failed"  ? "Ο φάκελος έκλεισε · στείλτε τη με το email σας"
+    :                           "Ο φάκελος έκλεισε";
+  markPending();
 }
 /* το κουμπί του τελικού σκηνικού — φαίνεται μόνο όταν η απάντηση
    περιμένει να φύγει με email */
@@ -1341,11 +1376,8 @@ function fold(d){
     body.classList.add("sent");
     pearl.setAttribute("aria-expanded","false");
     sendBtn.disabled = false; sendLbl.textContent = "Αποστολή";
-    capText.textContent = pendingMail
-      ? "Ο φάκελος έκλεισε"
-      : (d.rsvp === LABEL.no
-          ? "Θα μας λείψετε — ευχαριστούμε για την απάντηση"
-          : "Η ευχή σας ταξίδεψε · σας περιμένουμε");
+    lastReply = d;
+    paintOutcome();
     if(!$("#again")){
       var again = document.createElement("button");
       again.className = "again"; again.id = "again"; again.type = "button";
@@ -1353,7 +1385,6 @@ function fold(d){
       again.addEventListener("click", function(){ pearl.click(); });
       caption.appendChild(again);
     }
-    markPending();
   }, 4700);
 }
 })();
