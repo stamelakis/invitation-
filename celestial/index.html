@@ -109,14 +109,18 @@ body.sending .env, body.sending .sleeve{
   transform:scale(1.01); filter:blur(.6px) brightness(.98) }
 /* καθώς η κάρτα βυθίζεται, ο φάκελος καθαρίζει και σφίγγει ελαφρά */
 body.shutting .env, body.shutting .sleeve{
-  transform:scale(1.012); filter:none;
-  transition:transform 640ms var(--ease-soft), filter 520ms var(--ease-soft),
+  transform:scale(1.022); filter:none;
+  transition:transform 800ms var(--ease-soft), filter 700ms var(--ease-soft),
              opacity 180ms linear }
 /* και κάθεται ακριβώς στη σκηνή 1 */
 body.shutting.closed .env, body.shutting.closed .sleeve{
   transform:none; filter:none;
-  transition:transform 700ms var(--ease-soft), filter 520ms var(--ease-soft),
+  transition:transform 1100ms var(--ease-soft), filter 700ms var(--ease-soft),
              opacity 180ms linear }
+
+/* τη στιγμή που κλείνει, το μαργαριτάρι πιάνει φως — το τελευταίο «κλικ» */
+body.shutting.closed .pearl{opacity:1; transition:opacity 700ms var(--ease)}
+body.shutting.closed .gleam{opacity:.38; transition:opacity 900ms var(--ease) 260ms}
 
 /* ── Το κουμπί του μαργαριταριού ── */
 .pearl{
@@ -483,17 +487,23 @@ body.sending #card{opacity:0; visibility:hidden; transition:opacity 1ms}
   width:87%; height:85%; translate:-50% -50%;
   perspective:1500px; perspective-origin:50% 50%;
   pointer-events:none;
-  filter:drop-shadow(0 16px 22px rgba(96,74,42,.42));
-  transition:transform 780ms var(--ease-soft), opacity 460ms var(--ease) 560ms;
+  filter:drop-shadow(0 18px 26px rgba(96,74,42,.50));
+  transition:transform 1000ms var(--ease-soft), opacity 500ms var(--ease) 800ms;
 }
-/* καθώς διπλώνει, μαζεύεται και ανεβαίνει πάνω από την κορδέλα */
-.folder.f2{transform:translateY(-16%) scale(.62)}
-/* και μετά βυθίζεται και χάνεται πίσω της, μέσα στον φάκελο */
-.folder.tuck{transform:translateY(14%) scale(.34) rotateX(24deg); opacity:0}
+/* καθώς διπλώνει, μαζεύεται και ανεβαίνει ΨΗΛΑ πάνω από την κορδέλα, ώστε
+   να έχει δρόμο να διανύσει μπροστά στα μάτια σου πριν χωθεί από κάτω της */
+.folder.f2{transform:translateY(-27%) scale(.75)}
+/* και μετά βυθίζεται και χάνεται πίσω της, μέσα στον φάκελο — αργά,
+   ώστε να φαίνεται καθαρά να περνά κάτω από την κορδέλα */
+.folder.tuck{
+  transform:translateY(14%) scale(.34) rotateX(24deg); opacity:0;
+  transition:transform 1400ms cubic-bezier(.34,.02,.56,1),
+             opacity 500ms var(--ease) 800ms;
+}
 .panel{
   position:absolute; left:0; width:100%; height:33.3334%;
   transform-style:preserve-3d;
-  transition:transform 640ms var(--ease-soft);
+  transition:transform 900ms var(--ease-soft);
 }
 .p0{top:0;              z-index:3; transform-origin:50% 100%}
 .p1{top:33.3333%;       z-index:1}
@@ -519,7 +529,7 @@ body.sending #card{opacity:0; visibility:hidden; transition:opacity 1ms}
 .p0 .clip{top:0}    .p1 .clip{top:-100%}    .p2 .clip{top:-200%}
 /* η πτυχή αφήνει σκιά στο διπλανό φύλλο */
 .crease{position:absolute; left:0; right:0; height:26%; pointer-events:none; opacity:0;
-  transition:opacity 500ms var(--ease)}
+  transition:opacity 700ms var(--ease)}
 .p1 .crease.t{top:0;    background:linear-gradient(180deg, rgba(112,88,52,.30), rgba(112,88,52,0))}
 .p1 .crease.b{bottom:0; background:linear-gradient(0deg,   rgba(112,88,52,.30), rgba(112,88,52,0))}
 .folder.f1 .p1 .crease.b{opacity:1}
@@ -1226,7 +1236,7 @@ sendBtn.addEventListener("click", function(){
   var d = payload();
   deliver(d);
   scroll.scrollTo({top:0, behavior:"smooth"});
-  setTimeout(function(){ fold(d); }, 520);
+  setTimeout(function(){ fold(d); }, 420);
 });
 
 function fold(d){
@@ -1263,13 +1273,14 @@ function fold(d){
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){ folder.classList.add("f1"); });
   });
-  setTimeout(function(){ folder.classList.add("f2");    },  520);
-  /* μπαίνει η θήκη: η κάρτα κάθεται ολόκληρη πάνω από την κορδέλα */
-  setTimeout(function(){ body.classList.add("shutting");}, 1360);
-  /* βυθίζεται και χάνεται από πίσω */
-  setTimeout(function(){ folder.classList.add("tuck");  }, 1420);
+  /* η δεύτερη πτυχή, αφού προλάβει να κλείσει η πρώτη */
+  setTimeout(function(){ folder.classList.add("f2");    }, 1050);
+  /* η διπλωμένη κάρτα ξαποσταίνει πάνω στο κοχύλι, μετά μπαίνει η θήκη */
+  setTimeout(function(){ body.classList.add("shutting");}, 2350);
+  /* βυθίζεται αργά και χάνεται κάτω από την κορδέλα */
+  setTimeout(function(){ folder.classList.add("tuck");  }, 2500);
   /* και ο φάκελος κάθεται ακριβώς όπως στη σκηνή 1 */
-  setTimeout(function(){ body.classList.add("closed");  }, 2100);
+  setTimeout(function(){ body.classList.add("closed");  }, 3400);
   setTimeout(function(){
     folder.remove();
     body.classList.remove("open","sending","shutting","closed");
@@ -1286,7 +1297,7 @@ function fold(d){
       again.addEventListener("click", function(){ pearl.click(); });
       caption.appendChild(again);
     }
-  }, 2950);
+  }, 4700);
 }
 })();
 </script>
