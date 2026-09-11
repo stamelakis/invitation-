@@ -101,8 +101,22 @@ body{
 }
 .env img{display:block; width:100%; height:100%; object-fit:cover}
 /* όταν βγαίνει η κάρτα, ο φάκελος περνά σε βάθος πεδίου */
-body.open .env{ transform:scale(1.045); filter:blur(2.4px) brightness(.93) saturate(.95) }
-body.sending .env{ transform:scale(1.01); filter:blur(.6px) brightness(.98) }
+/* η θήκη του κλεισίματος ακολουθεί τον φάκελο σε κάθε κατάσταση, ώστε να
+   μένει πάντα καρέ-στο-καρέ πάνω του (§6β) */
+body.open .env, body.open .sleeve{
+  transform:scale(1.045); filter:blur(2.4px) brightness(.93) saturate(.95) }
+body.sending .env, body.sending .sleeve{
+  transform:scale(1.01); filter:blur(.6px) brightness(.98) }
+/* καθώς η κάρτα βυθίζεται, ο φάκελος καθαρίζει και σφίγγει ελαφρά */
+body.shutting .env, body.shutting .sleeve{
+  transform:scale(1.012); filter:none;
+  transition:transform 640ms var(--ease-soft), filter 520ms var(--ease-soft),
+             opacity 180ms linear }
+/* και κάθεται ακριβώς στη σκηνή 1 */
+body.shutting.closed .env, body.shutting.closed .sleeve{
+  transform:none; filter:none;
+  transition:transform 700ms var(--ease-soft), filter 520ms var(--ease-soft),
+             opacity 180ms linear }
 
 /* ── Το κουμπί του μαργαριταριού ── */
 .pearl{
@@ -470,9 +484,12 @@ body.sending #card{opacity:0; visibility:hidden; transition:opacity 1ms}
   perspective:1500px; perspective-origin:50% 50%;
   pointer-events:none;
   filter:drop-shadow(0 16px 22px rgba(96,74,42,.42));
-  transition:transform 1100ms var(--ease-soft), opacity 500ms var(--ease) 900ms;
+  transition:transform 780ms var(--ease-soft), opacity 460ms var(--ease) 560ms;
 }
-.folder.tuck{transform:translateY(29%) scale(.34) rotateX(30deg); opacity:0}
+/* καθώς διπλώνει, μαζεύεται και ανεβαίνει πάνω από την κορδέλα */
+.folder.f2{transform:translateY(-16%) scale(.62)}
+/* και μετά βυθίζεται και χάνεται πίσω της, μέσα στον φάκελο */
+.folder.tuck{transform:translateY(14%) scale(.34) rotateX(24deg); opacity:0}
 .panel{
   position:absolute; left:0; width:100%; height:33.3334%;
   transform-style:preserve-3d;
@@ -507,6 +524,24 @@ body.sending #card{opacity:0; visibility:hidden; transition:opacity 1ms}
 .p1 .crease.b{bottom:0; background:linear-gradient(0deg,   rgba(112,88,52,.30), rgba(112,88,52,0))}
 .folder.f1 .p1 .crease.b{opacity:1}
 .folder.f2 .p1 .crease.t{opacity:1}
+
+/* ═══════════════════════════════════════════════════════════════
+   6β · ΤΟ ΚΛΕΙΣΙΜΟ — η κάρτα χώνεται κάτω από την κορδέλα
+   Η «θήκη» είναι τα ΙΔΙΑ pixel της φωτογραφίας, κομμένα από τη γραμμή
+   του τούλι και κάτω, σε στρώση πάνω από τη διπλωμένη κάρτα. Παίρνει
+   ακριβώς τις ίδιες μεταμορφώσεις με τον φάκελο, άρα είναι αόρατη —
+   δουλεύει μόνο σαν εμπόδιο: η κάρτα βυθίζεται και χάνεται από πίσω.
+   ═══════════════════════════════════════════════════════════════ */
+.sleeve{
+  position:absolute; left:50%; top:50%; translate:-50% -50%;
+  width:calc(100svh * 9 / 16); height:100svh;
+  z-index:8; pointer-events:none; opacity:0;
+  clip-path:inset(45.5% 0 0 0);          /* από την πάνω ακμή του τούλι και κάτω */
+  transition:transform 1400ms var(--ease), filter 1100ms var(--ease),
+             opacity 180ms linear;
+}
+.sleeve img{display:block; width:100%; height:100%; object-fit:cover}
+body.shutting .sleeve{opacity:1}
 
 /* ═══════════════════════════════════════════════════════════════
    7 · ΛΕΖΑΝΤΑ, ΦΥΛΛΑ ΠΛΗΡΟΦΟΡΙΩΝ, ΜΗΝΥΜΑΤΑ
@@ -808,6 +843,10 @@ body.sent .caption svg{display:none}
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V6a2 2 0 0 1 4 0v5m0-2a2 2 0 0 1 4 0v3m0-1a2 2 0 0 1 4 0v4a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.5L6 16"/></svg>
     <span id="capText">Αγγίξτε το μαργαριτάρι</span>
   </div>
+
+  <!-- ═══ ΤΟ ΚΛΕΙΣΙΜΟ ΤΟΥ ΦΑΚΕΛΟΥ ═══ -->
+  <div class="sleeve" aria-hidden="true"><img src="art/scene-9x16.webp"
+       width="1242" height="2208" alt=""></div>
 </div>
 
 <!-- φύλλο: πορτρέτα -->
@@ -1051,7 +1090,10 @@ CFG.phones.forEach(function(p){
   row.style.marginTop = "8px";
   row.innerHTML =
     '<div class="val" style="font-size:clamp(10px,1.7svh,12.5px);letter-spacing:.14em">' +
-      esc(p.label) + '<div class="sub" style="font-size:12px;letter-spacing:.1em">' + esc(p.pretty) + '</div></div>';
+      esc(p.label) +
+      /* πιο μαζεμένο γράμμα και χωρίς σπάσιμο: κάθε αριθμός σε μία σειρά */
+      '<div class="sub" style="font-size:12px;letter-spacing:.06em;white-space:nowrap">' +
+        esc(p.pretty) + '</div></div>';
   var call = document.createElement("a");
   call.className = "act sm"; call.href = "tel:" + p.tel;
   call.setAttribute("aria-label", "Καλέστε " + p.who);
@@ -1221,11 +1263,16 @@ function fold(d){
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){ folder.classList.add("f1"); });
   });
-  setTimeout(function(){ folder.classList.add("f2");   }, 560);
-  setTimeout(function(){ folder.classList.add("tuck"); }, 1180);
+  setTimeout(function(){ folder.classList.add("f2");    },  520);
+  /* μπαίνει η θήκη: η κάρτα κάθεται ολόκληρη πάνω από την κορδέλα */
+  setTimeout(function(){ body.classList.add("shutting");}, 1360);
+  /* βυθίζεται και χάνεται από πίσω */
+  setTimeout(function(){ folder.classList.add("tuck");  }, 1420);
+  /* και ο φάκελος κάθεται ακριβώς όπως στη σκηνή 1 */
+  setTimeout(function(){ body.classList.add("closed");  }, 2100);
   setTimeout(function(){
     folder.remove();
-    body.classList.remove("open","sending");
+    body.classList.remove("open","sending","shutting","closed");
     body.classList.add("sent");
     pearl.setAttribute("aria-expanded","false");
     sendBtn.disabled = false; sendLbl.textContent = "Αποστολή";
@@ -1239,7 +1286,7 @@ function fold(d){
       again.addEventListener("click", function(){ pearl.click(); });
       caption.appendChild(again);
     }
-  }, 2380);
+  }, 2950);
 }
 })();
 </script>
